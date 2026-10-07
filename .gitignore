@@ -1,0 +1,5 @@
+node_modules
+.svelte-kit
+build
+# Array font licence: do not publish the font files in a public repo
+static/fonts

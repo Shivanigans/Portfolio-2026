@@ -1,0 +1,107 @@
+/*
+  Visual direction: File Life reference.
+  Pale grey page, one narrow column, JetBrains Mono throughout, Array for headings, one blue accent.
+*/
+
+/* Array (Fontshare). Copy Array-Regular.woff2 from the walks from life project into static/fonts */
+@font-face {
+	font-family: 'Array';
+	src: url('/fonts/Array-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+
+:root {
+	--bg: #e0e0dc;
+	--text: #2b2b2b;
+	--muted: #6e6e6a;
+	--line: #b5b5b0;
+	--accent: #1f3aa8; /* dates and highlights */
+	--marker: #3a55e8; /* newest post square */
+	--highlight: #ebebe7; /* background behind notes */
+
+	--display: 'Array', 'JetBrains Mono', monospace; /* headings only */
+	--mono: 'JetBrains Mono', monospace; /* everything else */
+	--sans: var(--mono); /* prose uses the same font; kept separate in case you change your mind */
+
+	--measure: 32rem; /* narrow column, like the reference */
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--sans);
+	font-size: 1rem;
+	line-height: 1.65;
+	text-wrap: pretty;
+}
+
+a {
+	color: inherit;
+}
+
+h1,
+h2 {
+	font-family: var(--display);
+	font-weight: 400;
+}
+
+.site-header {
+	max-width: var(--measure);
+	margin: 0 auto;
+	padding: 1.5rem 1rem 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	font-family: var(--mono);
+	font-size: 0.9rem;
+}
+
+.monogram {
+	font-weight: 700;
+	text-decoration: none;
+}
+
+nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 1rem;
+}
+
+nav a {
+	text-decoration: none;
+	color: var(--muted);
+}
+
+nav a:hover,
+nav a[aria-current='page'] {
+	color: var(--text);
+	font-weight: 700;
+}
+
+main {
+	max-width: var(--measure);
+	margin: 0 auto;
+	padding: 3rem 1rem 6rem;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* Small bold monospace section labels, like "Itinerary" in the reference */
+.label {
+	font-family: var(--mono);
+	font-weight: 700;
+	font-size: 1rem;
+	margin: 3.5rem 0 1rem;
+}
