@@ -7,7 +7,7 @@
 	<title>Blog · Shivani Singh Ghoshi</title>
 </svelte:head>
 
-<h1>blog</h1>
+<h1>Blog</h1>
 <p class="intro">Notes on design, data and things I'm making. Roughly once a month.</p>
 
 <p class="label">Posts</p>

@@ -8,7 +8,8 @@ const config = {
 	preprocess: [mdsvex({ extensions: ['.md'] })],
 	kit: {
 		// Builds the site as plain static files you can host anywhere
-		adapter: adapter()
+		// fallback makes a 404.html, so hosts can show your "Page not found" page
+		adapter: adapter({ fallback: '404.html' })
 	}
 };
 

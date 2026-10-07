@@ -1,30 +1,40 @@
 /*
-  Visual direction: File Life reference.
-  Pale grey page, one narrow column, JetBrains Mono throughout, Array for headings, one blue accent.
+  Visual direction: Figma draft (Website, node 17-35).
+  Off-white page, one centred column, DM Sans throughout, yellow starburst stickers.
 */
 
-/* Array (Fontshare). Copy Array-Regular.woff2 from the walks from life project into static/fonts */
+/* MEG Honey, used for sticker lettering. The licence allows web use but not sharing
+   the file, so static/fonts stays out of git. Copy MEGHoneyRegular.woff2 there. */
 @font-face {
-	font-family: 'Array';
-	src: url('/fonts/Array-Regular.woff2') format('woff2');
+	font-family: 'Honey';
+	src: url('/fonts/MEGHoneyRegular.woff2') format('woff2');
 	font-weight: 400;
 	font-display: swap;
 }
 
 :root {
-	--bg: #e0e0dc;
-	--text: #2b2b2b;
-	--muted: #6e6e6a;
-	--line: #b5b5b0;
-	--accent: #1f3aa8; /* dates and highlights */
-	--marker: #3a55e8; /* newest post square */
-	--highlight: #ebebe7; /* background behind notes */
+	--bg: #f7f7ef;
+	--text: #413c3c;
+	--ink: #000000; /* project descriptions */
+	--muted: #7f7f7f;
+	--line: #aeaeae;
+	--card: #ffffff;
+	--sun: #f9e278; /* starburst yellow */
+	--pink: #f70080; /* sticker lettering */
+	--shadow: 0 1px 6px rgba(65, 60, 50, 0.14);
 
-	--display: 'Array', 'JetBrains Mono', monospace; /* headings only */
-	--mono: 'JetBrains Mono', monospace; /* everything else */
-	--sans: var(--mono); /* prose uses the same font; kept separate in case you change your mind */
+	--sans: 'DM Sans', system-ui, sans-serif;
+	--sticker: 'Honey', Georgia, serif;
 
-	--measure: 32rem; /* narrow column, like the reference */
+	/* Older names the blog pages still use */
+	--display: var(--sans);
+	--mono: var(--sans);
+	--accent: var(--text);
+	--marker: var(--pink);
+	--highlight: #efefe6;
+
+	--column: 41.5rem; /* the project column */
+	--page: 72rem; /* header and wide bits */
 }
 
 * {
@@ -36,8 +46,8 @@ body {
 	background: var(--bg);
 	color: var(--text);
 	font-family: var(--sans);
-	font-size: 1rem;
-	line-height: 1.65;
+	font-size: 1.125rem;
+	line-height: 1.45;
 	text-wrap: pretty;
 }
 
@@ -45,63 +55,44 @@ a {
 	color: inherit;
 }
 
+/* Highlighted text turns pink, on a soft pink background */
+::selection {
+	color: var(--pink);
+	background: #ffd9ec;
+}
+
 h1,
 h2 {
 	font-family: var(--display);
-	font-weight: 400;
-}
-
-.site-header {
-	max-width: var(--measure);
-	margin: 0 auto;
-	padding: 1.5rem 1rem 0;
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	flex-wrap: wrap;
-	gap: 0.75rem;
-	font-family: var(--mono);
-	font-size: 0.9rem;
-}
-
-.monogram {
-	font-weight: 700;
-	text-decoration: none;
-}
-
-nav {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.4rem 1rem;
-}
-
-nav a {
-	text-decoration: none;
-	color: var(--muted);
-}
-
-nav a:hover,
-nav a[aria-current='page'] {
-	color: var(--text);
-	font-weight: 700;
+	font-weight: 600;
 }
 
 main {
-	max-width: var(--measure);
+	max-width: var(--column);
 	margin: 0 auto;
-	padding: 3rem 1rem 6rem;
+	padding: 0 1rem;
 }
 
-img {
+img,
+video {
 	max-width: 100%;
 	height: auto;
 	display: block;
 }
 
-/* Small bold monospace section labels, like "Itinerary" in the reference */
+/* Small bold section labels */
 .label {
-	font-family: var(--mono);
 	font-weight: 700;
 	font-size: 1rem;
 	margin: 3.5rem 0 1rem;
+}
+
+/* Hidden on screen, still read out by screen readers */
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
 }
