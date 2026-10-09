@@ -4,26 +4,20 @@
 	// Everything it shows comes from src/lib/tinkerings.js.
 	import { onMount } from 'svelte';
 	import Media from '$lib/components/Media.svelte';
+	import QuoteStack from '$lib/components/QuoteStack.svelte';
 	import Title, { plain } from '$lib/components/Title.svelte';
 
 	// project: the one to show. origin(id): the card thumbnail on the page for that project.
 	// onclosed: called once the closing animation has finished.
-	// onprev / onnext: swap to the previous or next project.
 	// top: how far down the window the panel starts, in pixels (just under the top line).
-	let { project, origin, onclosed, onprev, onnext, top = 32 } = $props();
+	let { project, origin, onclosed, top = 32 } = $props();
 
 	const ease = 'cubic-bezier(.2,.8,.2,1)';
 	const growTime = 450;
 	const fadeTime = 400;
 
-	let overlay, panel, scroller, content;
+	let overlay, panel, content;
 	let closing = false;
-
-	// When the arrows swap the project, jump back to the top of the panel
-	$effect(() => {
-		project.id;
-		if (scroller) scroller.scrollTop = 0;
-	});
 
 	const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -81,12 +75,22 @@
 		onclosed();
 	}
 
-	// Escape closes; left and right arrow keys move between projects
+	// Splits text into plain words and links, written as [words](https://...)
+	function withLinks(text) {
+		const out = [];
+		let last = 0;
+		for (const match of text.matchAll(/\[([^\]]+)\]\(([^)\s]+)\)/g)) {
+			if (match.index > last) out.push({ text: text.slice(last, match.index) });
+			out.push({ text: match[1], url: match[2] });
+			last = match.index + match[0].length;
+		}
+		if (last < text.length) out.push({ text: text.slice(last) });
+		return out;
+	}
+
+	// Escape closes
 	function onkeydown(e) {
-		if (closing) return;
 		if (e.key === 'Escape') close();
-		else if (e.key === 'ArrowLeft') onprev();
-		else if (e.key === 'ArrowRight') onnext();
 	}
 </script>
 
@@ -105,35 +109,76 @@
 	aria-labelledby="panel-title"
 	tabindex="-1"
 >
-	<div class="scroller" bind:this={scroller}>
+	<div class="scroller">
 		<div class="content" bind:this={content}>
 			<!-- No visible cross: clicking outside the panel or pressing Escape closes it.
 			     This button stays hidden unless someone reaches it with the Tab key. -->
 			<button type="button" class="close" onclick={close}>Close {plain(project.title)}</button>
 
-			<!-- Stage holding the main visual, with plain arrows either side.
-			     The arrows scroll away with the stage. -->
-			<div class="stage">
-				<button type="button" class="arrow" aria-label="Previous project" onclick={onprev}>
-					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8" /></svg>
-				</button>
-				<div class="visual">
-					<Media src={project.media} alt={plain(project.title)} />
-				</div>
-				<button type="button" class="arrow" aria-label="Next project" onclick={onnext}>
-					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" /></svg>
-				</button>
-			</div>
-
-			<div class="text">
-				<h2 id="panel-title"><Title text={project.title} /></h2>
-
-				<p class="about">
-					{project.about ?? project.description}
-					{#if project.link && project.aboutLink}
-						<a href={project.link} target="_blank" rel="noopener">{project.aboutLink}</a>
+			<!-- Stage holding the main visual: a stack of quote cards if the project has them,
+			     otherwise the cover if there is one, otherwise the card's media.
+			     A project with a story has no stage: its pictures and cards sit in the story. -->
+			{#if !project.story?.length}
+				<div class="stage">
+					{#if project.quotes?.length}
+						<QuoteStack quotes={project.quotes} />
+					{:else}
+						<div class="visual">
+							<Media src={project.cover || project.media} alt={plain(project.title)} />
+						</div>
 					{/if}
-				</p>
+				</div>
+			{/if}
+
+			<div class="text" class:first={project.story?.length}>
+				<h2 id="panel-title"><Title text={project.title} /></h2>
+				{#if project.note}
+					<p class="subline">{project.note}</p>
+				{/if}
+
+				{#if project.about}
+					{@const paragraphs = project.about.split(/\n\s*\n/)}
+					{#each paragraphs as paragraph, i}
+						<p class="about">
+							{#each withLinks(paragraph) as part}{#if part.url}<a
+										href={part.url}
+										target="_blank"
+										rel="noopener">{part.text}</a
+									>{:else}{part.text}{/if}{/each}
+							{#if i === paragraphs.length - 1 && project.link && project.aboutLink}
+								<a href={project.link} target="_blank" rel="noopener">{project.aboutLink}</a>
+							{/if}
+						</p>
+					{/each}
+				{:else}
+					<!-- Only ever seen on your computer: the site won't build while this is empty -->
+					<p class="to-write">
+						Write this in your own words: fill in <code>about</code> for this project in
+						src/lib/tinkerings.js
+					</p>
+				{/if}
+
+				<!-- The write-up after the about text, part by part, in order -->
+				{#each project.story ?? [] as part}
+					{#if part.cards}
+						<div class="cards"><QuoteStack quotes={project.quotes ?? []} /></div>
+					{:else if part.image !== undefined}
+						<figure class="pic">
+							<Media src={part.image} alt={part.alt} />
+							{#if part.caption}<figcaption>{part.caption}</figcaption>{/if}
+						</figure>
+					{:else if part.heading}
+						<h3>{part.heading}</h3>
+					{:else if part.points}
+						<ul class="points">
+							{#each part.points as point}<li>{point}</li>{/each}
+						</ul>
+					{:else if part.closing}
+						<p class="about closing">{part.closing}</p>
+					{:else if part.text}
+						<p class="about">{part.text}</p>
+					{/if}
+				{/each}
 
 				{#if project.details?.length}
 					<dl class="details">
@@ -241,45 +286,9 @@
 
 	.stage {
 		display: grid;
-		grid-template-columns: auto 1fr auto;
-		align-items: center;
 		justify-items: center;
-		gap: 1rem;
-		padding: 4.5rem 1.25rem 3rem;
+		padding: 4.5rem 4.5rem 3rem;
 		background: #fff;
-	}
-
-	/* Plain arrow icons, no circle */
-	.arrow {
-		width: 2.25rem;
-		height: 2.25rem;
-		padding: 0.55rem;
-		border: 0;
-		background: none;
-		color: var(--ink);
-		cursor: pointer;
-		opacity: 0.7;
-		transition: opacity 0.15s ease;
-	}
-
-	.arrow:hover {
-		opacity: 1;
-	}
-
-	.arrow svg {
-		display: block;
-		width: 100%;
-		height: 100%;
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 1.6;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-
-	.arrow:focus-visible {
-		outline: 2px solid var(--text);
-		outline-offset: 2px;
 	}
 
 	.visual {
@@ -298,16 +307,38 @@
 		box-shadow: var(--shadow);
 	}
 
-	/* Text runs across the panel, inside thick margins that line up with the arrows */
+	/* Text runs across the panel, inside thick margins */
 	.text {
 		padding: 1rem 4.5rem 0;
 	}
 
+	/* Title on one line: 28px, 20px on phones */
 	h2 {
 		margin: 0 0 1rem;
 		font-family: var(--sans);
 		font-size: 1.75rem;
+		white-space: nowrap;
 		font-weight: 600;
+		color: var(--ink);
+	}
+
+	/* Grey line under the title: 17.6px, 6px below the title, 16px above the text */
+	.subline {
+		margin: -0.625rem 0 1rem;
+		font-size: 1.1rem;
+		line-height: 1.4;
+		color: var(--muted);
+	}
+
+	/* Reminder box for a missing description: pink dashed border, 16px text */
+	.to-write {
+		margin: 0;
+		padding: 1rem 1.25rem;
+		border: 2px dashed #ff3ca1;
+		border-radius: 8px;
+		background: #fff0f7;
+		font-size: 1rem;
+		line-height: 1.5;
 		color: var(--ink);
 	}
 
@@ -318,10 +349,74 @@
 		color: var(--ink);
 	}
 
+	/* With no picture on top, the title starts 72px down, same as a picture would */
+	.text.first {
+		padding-top: 4.5rem;
+	}
+
+	/* Story parts: 24px between paragraphs */
+	.about + .about {
+		margin-top: 1.5rem;
+	}
+
+	/* Pictures in the story: 40px above and below, 10px corners, caption 14.4px */
+	.pic {
+		margin: 2.5rem 0;
+	}
+
+	.pic :global(img),
+	.pic :global(.placeholder) {
+		border-radius: 10px;
+		box-shadow: var(--shadow);
+	}
+
+	.pic figcaption {
+		margin-top: 0.6rem;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+
+	/* Quote cards in the story: 48px above and below, as wide as the text and pictures */
+	.cards {
+		margin: 3rem 0;
+	}
+
+	.cards :global(.wrap) {
+		width: 100%;
+	}
+
+	/* Small heading: 20px, 48px above */
+	h3 {
+		margin: 3rem 0 1rem;
+		font-family: var(--sans);
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--ink);
+	}
+
+	/* List: 17.6px, 10px between points */
+	.points {
+		margin: 0 0 1.5rem;
+		padding-left: 1.2em;
+		display: grid;
+		gap: 0.6rem;
+		font-size: 1.1rem;
+		line-height: 1.55;
+		color: var(--ink);
+	}
+
+	.closing {
+		font-style: italic;
+	}
+
 	.about a {
 		color: var(--muted);
 		text-decoration: underline;
 		text-underline-offset: 3px;
+	}
+
+	.about a:hover {
+		color: var(--pink);
 	}
 
 	.details {
@@ -371,5 +466,36 @@
 		gap: 1.5rem;
 		margin-top: 3rem;
 		padding: 0 4.5rem;
+	}
+
+	/* Phones: the panel fills the width, with slimmer margins */
+	@media (max-width: 48rem) {
+		.panel {
+			width: 100vw;
+			left: 0;
+		}
+
+		.stage {
+			padding: 3rem 1.25rem 2rem;
+		}
+
+		.text,
+		.gallery,
+		.images {
+			padding-left: 1.25rem;
+			padding-right: 1.25rem;
+		}
+
+		h2 {
+			font-size: 1.25rem;
+		}
+
+		.text.first {
+			padding-top: 3rem;
+		}
+
+		.details div {
+			grid-template-columns: 7rem 1fr;
+		}
 	}
 </style>

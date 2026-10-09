@@ -53,6 +53,12 @@ body {
 
 a {
 	color: inherit;
+	transition: color 0.15s ease;
+}
+
+/* Links turn pink on hover (the menu keeps its own look) */
+a:hover {
+	color: var(--pink);
 }
 
 /* Highlighted text turns pink, on a soft pink background */
@@ -65,6 +71,28 @@ h1,
 h2 {
 	font-family: var(--display);
 	font-weight: 600;
+}
+
+/* Page titles: MEG Honey at the menu size, 28px (24px on phones), on one line.
+   The space above the capital letters is trimmed, so the top of the title
+   lines up exactly with the top of the star logo. */
+h1 {
+	margin: 0 0 1.5rem;
+	font-family: var(--sticker);
+	font-size: 1.75rem;
+	font-weight: 400; /* Honey only comes in one weight */
+	line-height: 1.15;
+	white-space: nowrap;
+	text-box: trim-start cap alphabetic;
+}
+
+/* Phones are too narrow for long titles on one line, so they wrap there */
+@media (max-width: 48rem) {
+	h1 {
+		font-size: 1.5rem;
+		white-space: normal;
+		text-wrap: wrap; /* fill each line before moving to the next */
+	}
 }
 
 main {

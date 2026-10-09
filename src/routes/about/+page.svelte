@@ -1,3 +1,3 @@
 <h1>About</h1>
-<p>Coming soon.</p>
-<p><a href="/blog">Read the blog</a></p>
+<p>Hi, I'm Shivani - a designer, maker and chief LLM operator. I'm using this space to showcase my present work. I'm open to work and currently freelancing. If anything here catches your eye, I would love to <a href="https://mail.google.com/mail/?view=cm&fs=1&to=singhshivani11240@gmail.com" target="_blank" rel="noopener">discuss it</a>! I also illustrate and sketchnote to make sense of the world around me. I live at <a href="https://www.instagram.com/_shivanigans_" target="_blank" rel="noopener">shivanigans on instagram</a>. </p>
+<p><a href="/blog">I recently wrote about what I worked on in September, read here.</a></p>

@@ -31,16 +31,15 @@
 	}
 
 	.back:hover {
-		color: var(--text);
+		color: var(--pink);
 	}
 
 	header {
 		margin: 2rem 0 2.5rem;
 	}
 
+	/* Same size as every page title (set in app.css), with less space under it for the date */
 	h1 {
-		font-size: 2.6rem;
-		line-height: 1.1;
 		margin: 0 0 0.75rem;
 	}
 
@@ -52,6 +51,11 @@
 	}
 
 	/* Everything written in the .md files */
+	/* Post text: 16px */
+	.body {
+		font-size: 1rem;
+	}
+
 	.body :global(h2) {
 		font-size: 1.6rem;
 		margin-top: 3rem;

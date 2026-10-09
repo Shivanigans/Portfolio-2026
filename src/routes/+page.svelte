@@ -1,2 +1,5 @@
-<h1>Shivani Singh Ghoshi</h1>
-<p>Home page placeholder. <a href="/blog">Read the blog</a>.</p>
+<svelte:head>
+	<title>Shivani Singh Ghoshi</title>
+</svelte:head>
+
+<h1>Hi, I’m Shivani, and this page is under construction.</h1>

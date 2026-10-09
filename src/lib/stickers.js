@@ -15,3 +15,8 @@ export const logoImage = sticker('Shivanigans-icon');
 export const logoStar = sticker('Shivanigans-star');
 export const logoFace = sticker('Shivanigans-face');
 export const awesomeImage = sticker('DFTBA-icon');
+// The bouncing logo's colours. It changes to another one each time it touches an edge.
+// Missing files are skipped.
+export const bounceImages = ['blue', 'pink', 'yellow']
+	.map((colour) => sticker(`Shivanigans-bounce-${colour}`))
+	.filter(Boolean);
