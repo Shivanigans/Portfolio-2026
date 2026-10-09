@@ -24,7 +24,9 @@
 	--shadow: 0 1px 6px rgba(65, 60, 50, 0.14);
 
 	--sans: 'DM Sans', system-ui, sans-serif;
-	--sticker: 'Honey', Georgia, serif;
+	/* Menu and page titles. Instrument Sans for now, until MEG Honey can go online.
+	   To switch back: 'Honey', Georgia, serif */
+	--sticker: 'Instrument Sans', system-ui, sans-serif;
 
 	/* Older names the blog pages still use */
 	--display: var(--sans);
