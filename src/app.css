@@ -12,11 +12,11 @@
 	font-display: swap;
 }
 
-/* Bagnard, for the menu and page titles. Free to share (SIL Open Font License),
-   so it's in git and works on the live site. */
+/* Junicode (Ansund), for the menu and page titles. Latin letters only, to keep it light.
+   Free to share (SIL Open Font License), so it's in git and works on the live site. */
 @font-face {
-	font-family: 'Bagnard';
-	src: url('/fonts/Bagnard.otf') format('opentype');
+	font-family: 'Junicode';
+	src: url('/fonts/Junicode.woff2') format('woff2');
 	font-weight: 400;
 	font-display: swap;
 }
@@ -35,7 +35,7 @@
 	--sans: 'DM Sans', system-ui, sans-serif;
 	/* Menu and page titles. To switch to MEG Honey once it can go online:
 	   'Honey', Georgia, serif */
-	--sticker: 'Bagnard', Georgia, serif;
+	--sticker: 'Junicode', Georgia, serif;
 
 	/* Older names the blog pages still use */
 	--display: var(--sans);

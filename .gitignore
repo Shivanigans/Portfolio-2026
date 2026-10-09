@@ -2,6 +2,6 @@ node_modules
 .svelte-kit
 build
 # Array and MEG Honey font licences: do not publish those font files in a public repo.
-# Bagnard is free to share (SIL Open Font License), so it is the one font that goes in.
+# Junicode is free to share (SIL Open Font License), so it is the one font that goes in.
 static/fonts/*
-!static/fonts/Bagnard.otf
+!static/fonts/Junicode.woff2
