@@ -21,15 +21,33 @@
 	font-display: swap;
 }
 
+/* Junicode Condensed Medium, for the menu */
+@font-face {
+	font-family: 'Junicode';
+	src: url('/fonts/Junicode-CondMedium.woff2') format('woff2');
+	font-weight: 500;
+	font-display: swap;
+}
+
+/* Junicode Condensed SemiBold, for page titles */
+@font-face {
+	font-family: 'Junicode';
+	src: url('/fonts/Junicode-CondSemiBold.woff2') format('woff2');
+	font-weight: 600;
+	font-display: swap;
+}
+
 :root {
-	--bg: #f7f7ef;
-	--text: #413c3c;
-	--ink: #000000; /* project descriptions */
+	--bg: #ffffff;
+	--text: #160c28;
+	--ink: #160c28; /* project descriptions */
 	--muted: #7f7f7f;
 	--line: #aeaeae;
 	--card: #ffffff;
 	--sun: #f9e278; /* starburst yellow */
-	--pink: #f70080; /* sticker lettering */
+	--pink: #d72483;
+	--pink-soft: color-mix(in srgb, var(--pink) 30%, var(--bg)); /* menu hover */
+	--blue: #1789fc;
 	--shadow: 0 1px 6px rgba(65, 60, 50, 0.14);
 
 	--sans: 'DM Sans', system-ui, sans-serif;
@@ -42,7 +60,7 @@
 	--mono: var(--sans);
 	--accent: var(--text);
 	--marker: var(--pink);
-	--highlight: #efefe6;
+	--highlight: color-mix(in srgb, var(--text) 5%, var(--bg));
 
 	--column: 41.5rem; /* the project column */
 	--page: 72rem; /* header and wide bits */
@@ -75,7 +93,7 @@ a:hover {
 /* Highlighted text turns pink, on a soft pink background */
 ::selection {
 	color: var(--pink);
-	background: #ffd9ec;
+	background: color-mix(in srgb, var(--pink) 18%, var(--bg));
 }
 
 h1,
@@ -91,7 +109,7 @@ h1 {
 	margin: 0 0 1.5rem;
 	font-family: var(--sticker);
 	font-size: 1.75rem;
-	font-weight: 400; /* Honey only comes in one weight */
+	font-weight: 600; /* Junicode Condensed SemiBold */
 	line-height: 1.15;
 	white-space: nowrap;
 	text-box: trim-start cap alphabetic;

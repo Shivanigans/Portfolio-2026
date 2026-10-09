@@ -39,8 +39,11 @@
 		font-size: 1rem;
 	}
 
-	/* Posts start 32px below the intro, no lines between them */
+	/* Posts start 32px below the intro, with a line under each one.
+	   The list (and its lines) runs wider than the text column, to 128px from the
+	   right edge of the screen. */
 	.post-list {
+		width: max(100%, calc(100vw - var(--side) - 100px - 8rem));
 		list-style: none;
 		padding: 0;
 		margin: 2rem 0 0;
@@ -55,6 +58,7 @@
 		gap: 0 0.6rem;
 		padding: 0.7rem 0;
 		text-decoration: none;
+		border-bottom: 1px solid var(--line);
 	}
 
 	.marker {
@@ -74,12 +78,14 @@
 		font-weight: 700;
 	}
 
-	.post-list a:hover .title {
-		text-decoration: underline;
-		text-underline-offset: 3px;
-	}
-
 	time {
 		color: var(--muted);
+	}
+
+	/* Phones: the list fits the screen */
+	@media (max-width: 48rem) {
+		.post-list {
+			width: auto;
+		}
 	}
 </style>

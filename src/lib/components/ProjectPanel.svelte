@@ -334,9 +334,9 @@
 	.to-write {
 		margin: 0;
 		padding: 1rem 1.25rem;
-		border: 2px dashed #ff3ca1;
+		border: 2px dashed var(--pink);
 		border-radius: 8px;
-		background: #fff0f7;
+		background: color-mix(in srgb, var(--pink) 8%, #fff);
 		font-size: 1rem;
 		line-height: 1.5;
 		color: var(--ink);

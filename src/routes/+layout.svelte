@@ -5,6 +5,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import Starburst from '$lib/components/Starburst.svelte';
 	import BouncingLogo from '$lib/components/BouncingLogo.svelte';
+	import SocialIcon from '$lib/components/SocialIcon.svelte';
 	import { logoImage, logoStar, logoFace } from '$lib/stickers.js';
 	import { popup } from '$lib/popup.svelte.js';
 	import '../app.css';
@@ -22,7 +23,6 @@
 	const behanceLink = 'https://www.behance.net/shivanigans';
 	const linkedinLink = 'https://www.linkedin.com/in/shivanisinghghoshi';
 	const instagramLink = 'https://www.instagram.com/_shivanigans_';
-	const emailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=singhshivani11240@gmail.com';
 	const resumeLink = 'https://drive.google.com/file/d/1E4UBo4NH8hVvh5J31Wnv1Z4iuO1KdUJo/view?usp=sharing';
 
 	// Pages where the logo leaves its spot and drifts around the screen.
@@ -114,17 +114,22 @@
 					<span>{link.label}</span>
 				</a>
 			{/each}
+
+			<!-- Resume opens in a new tab, so it gets an arrow pointing up and out -->
+			<a href={resumeLink} target="_blank" rel="noopener">
+				<span>Resume</span>
+				<svg class="out" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 9.5l7-7M4 2.5h5.5V8" /></svg>
+			</a>
+
+			<!-- Behance, LinkedIn and Instagram icons in a row: at the bottom of the side panel,
+			     or at the end of the menu on phones -->
+			<div class="social">
+				<a href={behanceLink} target="_blank" rel="noopener" aria-label="Behance"><SocialIcon name="behance" /></a>
+				<a href={linkedinLink} target="_blank" rel="noopener" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
+				<a href={instagramLink} target="_blank" rel="noopener" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+			</div>
 		</nav>
 
-		<div class="side-note">
-			<p>
-				A bunch of my projects live on <a href={behanceLink} target="_blank" rel="noopener">Behance</a>. Find my
-				<a href={linkedinLink} target="_blank" rel="noopener">LinkedIn</a>,
-				<a href={emailLink} target="_blank" rel="noopener">email</a> and
-				<a href={instagramLink} target="_blank" rel="noopener">Instagram</a> here.
-			</p>
-			<p>Also, my <a href={resumeLink} target="_blank" rel="noopener">resume</a>.</p>
-		</div>
 	</aside>
 
 	{#if bouncing && logoSpot}
@@ -140,11 +145,16 @@
 	.frame {
 		display: grid;
 		/* --side: the side panel width. --logo: the star logo size, 256px, or 78% of the panel
-		   width on narrower windows so it always fits. The logo row is sized to fit the logo. */
+		   width on narrower windows, or 24% of the screen height on short screens, so the
+		   side panel always fits on one screen. The logo row is sized to fit the logo. */
 		--side: clamp(13rem, 18vw, 22rem);
-		--logo: min(256px, calc(var(--side) * 0.78));
+		--logo: min(256px, calc(var(--side) * 0.78), 24vh);
+		--logo: min(256px, calc(var(--side) * 0.78), 24dvh);
 		grid-template-columns: var(--side) minmax(0, 1fr);
+		/* dvh is the height you can actually see. On iPads and phones, plain vh also counts
+		   the bit hidden behind the browser bars, which made the page scroll. */
 		min-height: 100vh;
+		min-height: 100dvh;
 	}
 
 	/* Side panel: logo on top, the menu, then a boxed note at the bottom.
@@ -153,8 +163,10 @@
 		position: sticky;
 		top: 0;
 		height: 100vh;
+		height: 100dvh;
+		overflow-y: auto; /* only on very short screens, so the note is never cut off */
 		display: grid;
-		grid-template-rows: calc(var(--logo) / 0.78) 1fr auto;
+		grid-template-rows: calc(var(--logo) / 0.78) 1fr;
 		min-height: 0;
 		border-right: 1px solid var(--line); /* full-height divider */
 	}
@@ -204,17 +216,18 @@
 	nav {
 		display: flex;
 		flex-direction: column;
-		gap: 0.4vh;
-		padding-top: 5vh;
+		gap: 0.4dvh;
+		padding-top: 5dvh;
 	}
 
 	nav a {
 		display: flex;
 		align-items: center;
-		min-height: 6.2vh;
+		min-height: 6.2dvh;
 		padding: 0.2rem 1.75rem;
-		font-family: var(--sticker); /* MEG Honey */
+		font-family: var(--sticker); /* Junicode */
 		font-size: 1.75rem; /* 28px */
+		font-weight: 500; /* Junicode Condensed Medium */
 		line-height: 1.1;
 		color: var(--ink);
 		text-decoration: none;
@@ -228,11 +241,11 @@
 	}
 
 	nav a:hover {
-		background: #ffc0e0;
+		background: var(--pink-soft);
 	}
 
 	nav a.selected {
-		background: #ff3ca1;
+		background: var(--pink);
 	}
 
 	nav a:focus-visible {
@@ -240,23 +253,40 @@
 		outline-offset: -2px;
 	}
 
-	/* Note at the bottom, with a line above it */
-	.side-note {
-		padding: 1.75rem 1.75rem 1.5rem;
-		border-top: 1px solid var(--line);
-		font-size: clamp(0.85rem, 1vw, 1rem);
-		line-height: 1.4;
+	/* The arrow after Resume: 14px, a thin line like the Tinkerings arrows */
+	.out {
+		width: 0.5em;
+		height: 0.5em;
+		margin-left: 0.3em;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.4;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	/* Icons pushed to the bottom of the side panel, lined up with the menu words.
+	   36px icons, 36px apart. */
+	.social {
+		display: flex;
+		gap: 36px;
+		margin-top: auto;
+		padding: 2rem 1.75rem 2.5rem;
+	}
+
+	/* Only the colour changes on hover: dark to pink, no pink bar like the menu words */
+	nav .social a {
+		display: block;
+		width: 36px;
+		height: 36px;
+		min-height: 0;
+		padding: 0;
 		color: var(--ink);
 	}
 
-	.side-note p {
-		margin: 0;
-	}
-
-	.side-note a {
-		text-decoration: underline;
-		text-decoration-color: currentColor;
-		text-underline-offset: 3px;
+	nav .social a:hover {
+		background: none;
+		color: var(--pink);
 	}
 
 	/* Usual pages: a centred column with room above and below */
@@ -319,14 +349,12 @@
 	}
 
 	/* Phones: the side panel splits up. The logo and menu button make a band across the top,
-	   the links drop down below the logo when the menu is opened, and the note goes to the
-	   bottom of the page, after the page itself. */
+	   and the links (with the icons) drop down below the logo when the menu is opened. */
 	@media (max-width: 48rem) {
-		/* Rows: logo and menu button, the links (when open), the page, then the note.
-		   The page takes any spare room, so the note always sits at the very bottom. */
+		/* Rows: logo and menu button, the links (when open), then the page */
 		.frame {
 			grid-template-columns: auto minmax(0, 1fr);
-			grid-template-rows: auto auto 1fr auto;
+			grid-template-rows: auto auto 1fr;
 		}
 
 		/* The side panel lets its parts sit straight in the rows above */
@@ -349,7 +377,9 @@
 			grid-row: 1;
 			display: block;
 			justify-self: end;
-			margin-right: 0.25rem;
+			/* The lines sit as far in from the right edge as the star sits from the left
+			   (12px padding + the star starting 8.2% into the 114px logo = 21px) */
+			margin-right: calc(114px * 0.082);
 		}
 
 		/* Hidden until the menu is opened, then full-width rows like on desktop */
@@ -380,11 +410,18 @@
 			padding: 2.5rem 1rem 5rem;
 		}
 
-		.side-note {
-			grid-row: 4;
-			grid-column: 1 / -1;
-			padding: 1.25rem 1rem 1.5rem;
-			font-size: 0.9rem;
+		/* Phones: the icons sit in a row at the end of the open menu.
+		   28px icons, each with a 44px tap area, lined up with the menu words. */
+		.social {
+			gap: 0.5rem;
+			margin-top: 0;
+			padding: 0.5rem calc(1rem - 8px) 0;
+		}
+
+		nav .social a {
+			width: 44px;
+			height: 44px;
+			padding: 8px;
 		}
 	}
 

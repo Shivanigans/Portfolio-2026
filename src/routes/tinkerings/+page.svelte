@@ -167,6 +167,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		height: 100dvh; /* the height you can actually see, so there's no scroll on iPads */
 	}
 
 	/* Top band: a horizontal box with a line under it, like the side panels */
@@ -192,7 +193,7 @@
 
 	/* The matrix, on faint graph paper, filling the rest of the screen */
 	.matrix {
-		--faint: #cfcfc4;
+		--faint: color-mix(in srgb, var(--text) 18%, var(--bg));
 		position: relative;
 		flex: 1;
 		min-height: 0;
@@ -278,7 +279,7 @@
 	li {
 		position: absolute;
 		/* Width as a share of the matrix, but never so big it runs off the bottom */
-		width: min(calc(var(--w) * 1%), calc(var(--w) * 1.6vh));
+		width: min(calc(var(--w) * 1%), calc(var(--w) * 1.6dvh));
 	}
 
 	/* Cards are buttons, reset to look like plain cards */
