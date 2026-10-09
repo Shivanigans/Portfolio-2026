@@ -1,5 +1,7 @@
 node_modules
 .svelte-kit
 build
-# Array font licence: do not publish the font files in a public repo
-static/fonts
+# Array and MEG Honey font licences: do not publish those font files in a public repo.
+# Bagnard is free to share (SIL Open Font License), so it is the one font that goes in.
+static/fonts/*
+!static/fonts/Bagnard.otf
