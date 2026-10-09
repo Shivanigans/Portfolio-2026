@@ -45,7 +45,7 @@
 	--line: #aeaeae;
 	--card: #ffffff;
 	--sun: #f9e278; /* starburst yellow */
-	--pink: #d72483;
+	--pink: #e963a8;
 	--pink-soft: color-mix(in srgb, var(--pink) 30%, var(--bg)); /* menu hover */
 	--blue: #1789fc;
 	--shadow: 0 1px 6px rgba(65, 60, 50, 0.14);
