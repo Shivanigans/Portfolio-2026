@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>{page.status === 404 ? 'Page not found' : 'Something went wrong'} · Shivani Singh Ghoshi</title>
+	<title>{page.status === 404 ? 'Page not found' : 'Something went wrong'} · shivanigans</title>
 </svelte:head>
 
 <h1>{page.status === 404 ? 'Page not found' : 'Something went wrong'}</h1>

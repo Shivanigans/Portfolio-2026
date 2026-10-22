@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.meta.title} · Shivani Singh Ghoshi</title>
+	<title>{data.meta.title} · shivanigans</title>
 	{#if data.meta.summary}<meta name="description" content={data.meta.summary} />{/if}
 </svelte:head>
 

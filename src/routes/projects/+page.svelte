@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head>
-	<title>Projects · Shivani Singh Ghoshi</title>
+	<title>Projects · shivanigans</title>
 </svelte:head>
 
 <!-- While the popup is open, the page behind can't be clicked or tabbed into -->

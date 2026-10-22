@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-	<title>{plain(data.project.title)} · Shivani Singh Ghoshi</title>
+	<title>{plain(data.project.title)} · shivanigans</title>
 	{#if study.intro}<meta name="description" content={study.intro} />{/if}
 </svelte:head>
 

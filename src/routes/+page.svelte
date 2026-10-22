@@ -73,7 +73,7 @@
 <svelte:window bind:scrollY />
 
 <svelte:head>
-	<title>Shivani Singh Ghoshi</title>
+	<title>shivanigans</title>
 </svelte:head>
 
 <!-- While the popup is open, the page behind can't be clicked or tabbed into -->

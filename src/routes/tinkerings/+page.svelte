@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Tinkerings · Shivani Singh Ghoshi</title>
+	<title>Tinkerings · shivanigans</title>
 </svelte:head>
 
 <h1 class="visually-hidden">Tinkerings</h1>

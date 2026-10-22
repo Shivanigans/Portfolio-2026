@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Blog · Shivani Singh Ghoshi</title>
+	<title>Blog · shivanigans</title>
 </svelte:head>
 
 <h1>Blog</h1>

@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>About · Shivani Singh Ghoshi</title>
+	<title>About · shivanigans</title>
 </svelte:head>
 
 <div class="top">
