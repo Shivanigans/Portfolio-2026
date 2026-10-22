@@ -3,20 +3,42 @@
 	// and shrinks back into the card of whichever project is showing when it closes.
 	// Everything it shows comes from src/lib/tinkerings.js.
 	import { onMount } from 'svelte';
+	import Arrow from '$lib/components/Arrow.svelte';
 	import Media from '$lib/components/Media.svelte';
 	import QuoteStack from '$lib/components/QuoteStack.svelte';
 	import Title, { plain } from '$lib/components/Title.svelte';
 
 	// project: the one to show. origin(id): the card thumbnail on the page for that project.
 	// onclosed: called once the closing animation has finished.
-	// top: how far down the window the panel starts, in pixels (just under the top line).
-	let { project, origin, onclosed, top = 32 } = $props();
+	// top: how far down the window the panel starts, in pixels.
+	// step(dir): optional, moves to the next project (1) or the one before (-1). With it, the panel
+	// shows ← and → buttons and the arrow keys work. position: e.g. '2 / 8', shown above the title.
+	let { project, origin, onclosed, top = 56, step = null, position = '' } = $props();
+
+	// The pictures across the top, side by side: the project's images if it lists them,
+	// otherwise its cover (or card picture) on its own. A project with a story and no cover
+	// has its pictures in the story instead. A project with live demos shows those instead.
+	const pics = $derived(
+		project.demos?.length
+			? []
+			: project.images?.length
+				? project.images
+				: !project.story?.length || project.cover
+					? [project.cover || project.media]
+					: []
+	);
 
 	const ease = 'cubic-bezier(.2,.8,.2,1)';
 	const growTime = 450;
 	const fadeTime = 400;
 
-	let overlay, panel, content;
+	let overlay, panel, content, cross, scroller;
+
+	// Moving to another project starts it from the top
+	$effect(() => {
+		project.id;
+		if (scroller) scroller.scrollTop = 0;
+	});
 	let closing = false;
 
 	const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,7 +65,9 @@
 			// Start exactly over the card, then grow to the open size
 			panel.animate([{ transform: overCard(card) }, { transform: 'none' }], { duration: growTime, easing: ease });
 			// Content fades in a moment later, so nothing looks squashed mid-grow
-			content.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 200, fill: 'backwards' });
+			for (const part of [content, cross]) {
+				part.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 200, fill: 'backwards' });
+			}
 		}
 
 		// Move keyboard focus into the panel
@@ -63,7 +87,9 @@
 		if (reduceMotion() || !card) {
 			shrink = panel.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' });
 		} else {
-			content.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, fill: 'forwards' });
+			for (const part of [content, cross]) {
+				part.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, fill: 'forwards' });
+			}
 			shrink = panel.animate([{ transform: 'none' }, { transform: overCard(card) }], {
 				duration: growTime,
 				easing: ease,
@@ -88,9 +114,12 @@
 		return out;
 	}
 
-	// Escape closes
+	// Escape closes. With step, the left and right arrow keys move between projects.
 	function onkeydown(e) {
 		if (e.key === 'Escape') close();
+		if (!step || closing || e.target.closest?.('input, textarea, [contenteditable]')) return;
+		if (e.key === 'ArrowLeft') step(-1);
+		if (e.key === 'ArrowRight') step(1);
 	}
 </script>
 
@@ -109,31 +138,71 @@
 	aria-labelledby="panel-title"
 	tabindex="-1"
 >
-	<div class="scroller">
-		<div class="content" bind:this={content}>
-			<!-- No visible cross: clicking outside the panel or pressing Escape closes it.
-			     This button stays hidden unless someone reaches it with the Tab key. -->
-			<button type="button" class="close" onclick={close}>Close {plain(project.title)}</button>
+	<!-- Top right: ← and → (when there are other projects to move to), and the cross.
+	     Clicking outside the panel or pressing Escape closes it too. -->
+	<div class="controls" bind:this={cross}>
+		{#if step}
+			<button type="button" onclick={() => step(-1)} aria-label="Previous project"><Arrow dir="left" /></button>
+			<button type="button" onclick={() => step(1)} aria-label="Next project"><Arrow /></button>
+		{/if}
+		<button type="button" onclick={close} aria-label="Close project">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+		</button>
+	</div>
 
-			<!-- Stage holding the main visual: a stack of quote cards if the project has them,
-			     otherwise the cover if there is one, otherwise the card's media.
-			     A project with a story has no stage: its pictures and cards sit in the story. -->
-			{#if !project.story?.length}
+	<div class="scroller" bind:this={scroller}>
+		<div class="content" bind:this={content}>
+			<!-- The top: a stack of quote cards if the project has them and no story,
+			     otherwise its pictures, two side by side (a picture on its own takes the full width) -->
+			{#if project.quotes?.length && !project.story?.length}
 				<div class="stage">
-					{#if project.quotes?.length}
-						<QuoteStack quotes={project.quotes} />
-					{:else}
-						<div class="visual">
-							<Media src={project.cover || project.media} alt={plain(project.title)} />
+					<QuoteStack quotes={project.quotes} />
+				</div>
+			{:else if project.demos?.length}
+				<!-- Live demos: small web pages to point at and play with. A wide one spans both columns. -->
+				<div class="pics">
+					{#each project.demos as demo}
+						<div class="pic-tile demo" class:wide={demo.wide}>
+							<iframe src={demo.src} title={demo.title} loading="lazy"></iframe>
 						</div>
-					{/if}
+					{/each}
+				</div>
+			{:else if pics.length}
+				<div class="pics" class:single={pics.length === 1}>
+					{#each pics as src, i}
+						<div class="pic-tile">
+							<Media {src} alt={i === 0 ? plain(project.title) : ''} />
+						</div>
+					{/each}
 				</div>
 			{/if}
 
-			<div class="text" class:first={project.story?.length}>
-				<h2 id="panel-title"><Title text={project.title} /></h2>
+			<div class="text" class:first={!pics.length && !project.demos?.length && !(project.quotes?.length && !project.story?.length)}>
+				<!-- The title with its tags under it on the left, and the project's own link on the right -->
+				<div class="title-row">
+					<div class="title-block">
+						{#if position}<p class="position">{position}</p>{/if}
+						<h2 id="panel-title"><Title text={project.title} /></h2>
+						{#if project.tags?.length}
+							<ul class="tags" aria-label="Tags">
+								{#each project.tags as tag}<li class="tag">{tag}</li>{/each}
+							</ul>
+						{/if}
+					</div>
+
+					<!-- Opens the project itself, in a new tab -->
+					{#if project.link}
+						<a class="pill-button explore" href={project.link} target="_blank" rel="noopener">
+							Explore the project <Arrow dir="out" />
+						</a>
+					{/if}
+				</div>
 				{#if project.note}
 					<p class="subline">{project.note}</p>
+				{/if}
+
+				{#if project.aboutHeading}
+					<h3 class="about-heading">{project.aboutHeading}</h3>
 				{/if}
 
 				{#if project.about}
@@ -145,9 +214,6 @@
 										target="_blank"
 										rel="noopener">{part.text}</a
 									>{:else}{part.text}{/if}{/each}
-							{#if i === paragraphs.length - 1 && project.link && project.aboutLink}
-								<a href={project.link} target="_blank" rel="noopener">{project.aboutLink}</a>
-							{/if}
 						</p>
 					{/each}
 				{:else}
@@ -205,9 +271,9 @@
 				</ul>
 			{/if}
 
-			{#if project.images?.length}
+			{#if project.moreImages?.length}
 				<div class="images">
-					{#each project.images as image}
+					{#each project.moreImages as image}
 						<Media src={image.src} alt={image.alt} />
 					{/each}
 				</div>
@@ -217,24 +283,26 @@
 </div>
 
 <style>
+	/* The page behind fades into the desk colour and blurs */
 	.overlay {
 		position: fixed;
 		inset: 0;
 		z-index: 200;
-		background: rgba(247, 247, 239, 0.82);
+		background: color-mix(in srgb, var(--desk) 72%, transparent);
+		backdrop-filter: blur(6px);
 	}
 
-	/* Fixed to the window: centred, 80% wide up to 780px, from just under the top line down to the bottom edge */
+	/* Fixed to the window: a white sheet, centred, up to 860px wide, running off the bottom edge */
 	.panel {
+		--wide: min(86vw, 860px);
 		position: fixed;
 		z-index: 201;
-		top: 32px;
+		top: 56px;
 		bottom: 0;
-		width: min(80vw, 780px);
-		left: calc((100vw - min(80vw, 780px)) / 2);
-		background: #fff;
-		border-radius: 16px 16px 0 0;
-		box-shadow: 0 10px 40px rgba(65, 60, 50, 0.18);
+		width: var(--wide);
+		left: calc((100vw - var(--wide)) / 2);
+		background: var(--bg);
+		box-shadow: 0 10px 40px color-mix(in srgb, var(--text) 14%, transparent);
 		transform-origin: top left;
 		overflow: hidden;
 	}
@@ -261,50 +329,108 @@
 		padding-bottom: 5rem;
 	}
 
-	/* Hidden close button: only appears when reached with the Tab key */
-	.close {
+	/* ←, → and the cross: 40px squares outlined in the text colour, top right.
+	   They stay put while the panel scrolls. */
+	.controls {
 		position: absolute;
-		top: 0.75rem;
-		right: 0.75rem;
+		top: 1.25rem;
+		right: 1.25rem;
 		z-index: 2;
-		padding: 0.4rem 0.7rem;
-		border: 0;
-		border-radius: 6px;
-		background: var(--card);
-		font: inherit;
-		font-size: 0.85rem;
-		color: var(--ink);
-		cursor: pointer;
-		clip-path: inset(50%);
-		white-space: nowrap;
+		display: flex;
+		gap: 0.5rem;
 	}
 
-	.close:focus-visible {
-		clip-path: none;
+	.controls button {
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid var(--text);
+		background: var(--bg);
+		font-size: 0.95rem;
+		color: var(--text);
+		cursor: pointer;
+		transition: background-color 0.15s ease;
+	}
+
+	.controls svg {
+		width: 16px;
+		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linecap: round;
+	}
+
+	/* Pointing at one fills it with the soft pink, so it's clear it can be pressed */
+	.controls button:hover {
+		background: var(--pink-soft);
+	}
+
+	.controls button:focus-visible {
 		outline: 2px solid var(--text);
+		outline-offset: 2px;
 	}
 
 	.stage {
 		display: grid;
 		justify-items: center;
 		padding: 4.5rem 4.5rem 3rem;
-		background: #fff;
+		background: var(--bg);
 	}
 
-	.visual {
-		max-width: 100%;
-		min-width: 0;
+	/* The pictures across the top: two columns, 12px apart, as wide as the text below.
+	   Each is cropped to 4:3, square corners, a faint line round it.
+	   A single picture takes one column, so it's never one huge image. */
+	.pics {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+		padding: 4.5rem 4.5rem 2.5rem;
 	}
 
-	/* Main visual: as large as fits, never taller than most of the screen */
-	.stage .visual :global(img),
-	.stage .visual :global(video) {
-		width: auto;
-		max-width: 100%;
-		max-height: 58vh;
-		margin: 0 auto;
-		border-radius: 10px;
-		box-shadow: var(--shadow);
+	/* One picture on its own fills the whole width */
+	.pics.single {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.pic-tile {
+		position: relative;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+		background: var(--greige);
+	}
+
+	.pic-tile::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border: 1px solid var(--line);
+		pointer-events: none;
+	}
+
+	.pic-tile :global(img),
+	.pic-tile :global(video),
+	.pic-tile :global(.placeholder) {
+		width: 100%;
+		height: 100%;
+		aspect-ratio: auto;
+		object-fit: cover;
+	}
+
+	/* A live demo fills its tile. A wide one spans both columns and is taller, for a longer story. */
+	.demo iframe {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+
+	.demo.wide {
+		grid-column: 1 / -1;
+		aspect-ratio: auto;
+		height: 33rem;
 	}
 
 	/* Text runs across the panel, inside thick margins */
@@ -312,21 +438,61 @@
 		padding: 1rem 4.5rem 0;
 	}
 
-	/* Title on one line: 28px, 20px on phones */
-	h2 {
-		margin: 0 0 1rem;
-		font-family: var(--sans);
-		font-size: 1.75rem;
-		white-space: nowrap;
-		font-weight: 600;
-		color: var(--ink);
+	/* The title row: title and tags on the left, the Explore button on the right edge,
+	   level with the pictures. Their tops line up. On narrow panels the button drops below. */
+	.title-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem 1.5rem;
+		margin-bottom: 1rem;
 	}
 
-	/* Grey line under the title: 17.6px, 6px below the title, 16px above the text */
+	.title-block {
+		min-width: 0;
+	}
+
+	/* "2 / 8": which project this is, small and grey above the title */
+	.position {
+		margin: 0 0 0.5rem;
+		font-size: var(--type-meta);
+		color: var(--muted);
+	}
+
+	/* Title: National Park at 48px, 28px on phones */
+	h2 {
+		margin: 0;
+		font-family: var(--display);
+		font-size: 3rem;
+		font-weight: 600;
+		letter-spacing: var(--display-spacing);
+		line-height: 1.05;
+		color: var(--ink);
+		text-wrap: balance;
+	}
+
+	/* Tags just under the title */
+	.text .tags {
+		margin-top: 0.6rem;
+	}
+
+	/* The Explore button keeps to one line */
+	.explore {
+		flex: none;
+		white-space: nowrap;
+	}
+
+	/* "About", when a project has it: the first small heading, so less space above */
+	.about-heading {
+		margin-top: 1.5rem;
+	}
+
+	/* Grey line under the title, 16px above the text */
 	.subline {
-		margin: -0.625rem 0 1rem;
-		font-size: 1.1rem;
-		line-height: 1.4;
+		margin: -0.375rem 0 1rem;
+		font-size: var(--type-label);
+		line-height: 1.5;
 		color: var(--muted);
 	}
 
@@ -335,17 +501,24 @@
 		margin: 0;
 		padding: 1rem 1.25rem;
 		border: 2px dashed var(--pink);
-		border-radius: 8px;
-		background: color-mix(in srgb, var(--pink) 8%, #fff);
-		font-size: 1rem;
+		background: color-mix(in srgb, var(--pink) 8%, var(--bg));
+		font-size: var(--type-small);
 		line-height: 1.5;
 		color: var(--ink);
 	}
 
+	/* Description and story keep a comfortable reading width */
+	.about,
+	.points,
+	.subline {
+		max-width: 760px;
+	}
+
 	.about {
+		max-width: 60ch;
 		margin: 0;
-		font-size: 1.1rem;
-		line-height: 1.55;
+		font-size: var(--type-small);
+		line-height: 1.65;
 		color: var(--ink);
 	}
 
@@ -359,20 +532,19 @@
 		margin-top: 1.5rem;
 	}
 
-	/* Pictures in the story: 40px above and below, 10px corners, caption 14.4px */
+	/* Pictures in the story: 40px above and below, 10px corners, caption 14px */
 	.pic {
 		margin: 2.5rem 0;
 	}
 
 	.pic :global(img),
 	.pic :global(.placeholder) {
-		border-radius: 10px;
 		box-shadow: var(--shadow);
 	}
 
 	.pic figcaption {
 		margin-top: 0.6rem;
-		font-size: 0.9rem;
+		font-size: var(--type-caption);
 		color: var(--muted);
 	}
 
@@ -385,22 +557,22 @@
 		width: 100%;
 	}
 
-	/* Small heading: 20px, 48px above */
+	/* Small heading: National Park at 22px, 48px above */
 	h3 {
 		margin: 3rem 0 1rem;
-		font-family: var(--sans);
-		font-size: 1.25rem;
+		font-family: var(--display);
+		font-size: var(--type-card);
 		font-weight: 600;
 		color: var(--ink);
 	}
 
-	/* List: 17.6px, 10px between points */
+	/* List: 10px between points */
 	.points {
 		margin: 0 0 1.5rem;
 		padding-left: 1.2em;
 		display: grid;
 		gap: 0.6rem;
-		font-size: 1.1rem;
+		font-size: var(--type-small);
 		line-height: 1.55;
 		color: var(--ink);
 	}
@@ -416,7 +588,7 @@
 	}
 
 	.about a:hover {
-		color: var(--pink);
+		color: var(--pink-deep);
 	}
 
 	.details {
@@ -457,7 +629,7 @@
 
 	.gallery figcaption {
 		margin-top: 0.6rem;
-		font-size: 0.9rem;
+		font-size: var(--type-caption);
 		color: var(--ink);
 	}
 
@@ -479,6 +651,12 @@
 			padding: 3rem 1.25rem 2rem;
 		}
 
+		/* Phones: the pictures one under another */
+		.pics {
+			grid-template-columns: minmax(0, 1fr);
+			padding: 4rem 1.25rem 2rem;
+		}
+
 		.text,
 		.gallery,
 		.images {
@@ -487,15 +665,21 @@
 		}
 
 		h2 {
-			font-size: 1.25rem;
+			font-size: 1.75rem;
 		}
 
 		.text.first {
-			padding-top: 3rem;
+			padding-top: 4.5rem;
 		}
 
 		.details div {
 			grid-template-columns: 7rem 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.controls button {
+			transition: none;
 		}
 	}
 </style>

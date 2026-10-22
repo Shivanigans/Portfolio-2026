@@ -12,11 +12,10 @@
 
 {#if data.posts.length}
 	<ul class="post-list">
-		{#each data.posts as post, i}
+		{#each data.posts as post}
 			<li>
 				<a href="/blog/{post.slug}">
-					<!-- newest post gets the blue square, like "current location" in the reference -->
-					<span class="marker" class:latest={i === 0} aria-hidden="true"></span>
+					<span class="marker" aria-hidden="true"></span>
 					<span class="title">{post.title}</span>
 					<time datetime={post.date}>{formatDate(post.date)}</time>
 				</a>
@@ -28,64 +27,63 @@
 {/if}
 
 <style>
-	/* 12px between the title and the intro line */
+	/* The blog's titles are in Paper Mono Medium, set a little tighter */
 	h1 {
-		margin-bottom: 0.75rem;
+		margin-bottom: 1.25rem;
+		font-family: var(--mono);
+		font-size: min(var(--type-title), 3.25rem);
+		font-weight: 500;
 	}
 
-	/* Intro line: 16px */
 	.intro {
 		margin: 0;
-		font-size: 1rem;
+		font-size: var(--type-small);
 	}
 
-	/* Posts start 32px below the intro, with a line under each one.
-	   The list (and its lines) runs wider than the text column, to 128px from the
-	   right edge of the screen. */
+	/* Posts start 32px below the intro, a line above the list and between posts */
 	.post-list {
-		width: max(100%, calc(100vw - var(--side) - 100px - 8rem));
 		list-style: none;
 		padding: 0;
 		margin: 2rem 0 0;
-		font-family: var(--mono);
-		font-size: 1rem;
+		border-top: 1px solid var(--line);
 	}
 
+	.post-list li + li {
+		border-top: 1px solid var(--line);
+	}
+
+	/* Pink square, the title, and the date pushed to the right */
 	.post-list a {
 		display: flex;
 		align-items: baseline;
-		flex-wrap: wrap;
-		gap: 0 0.6rem;
-		padding: 0.7rem 0;
+		gap: 0 0.9rem;
+		padding: 0.8rem 0;
 		text-decoration: none;
-		border-bottom: 1px solid var(--line);
+	}
+
+	.post-list a:focus-visible {
+		outline: 2px solid var(--text);
+		outline-offset: 2px;
 	}
 
 	.marker {
-		width: 0.7rem;
-		height: 0.7rem;
-		flex-shrink: 0;
-		background: var(--muted);
-		border: 1px solid var(--text);
+		flex: none;
+		width: 0.6rem;
+		height: 0.6rem;
+		background: var(--marker);
 		align-self: center;
 	}
 
-	.marker.latest {
-		background: var(--marker);
-	}
-
 	.title {
-		font-weight: 700;
+		font-size: 1.125rem;
+		font-weight: 500;
+		letter-spacing: var(--display-spacing);
 	}
 
 	time {
+		margin-left: auto;
+		font-size: var(--type-meta);
 		color: var(--muted);
-	}
-
-	/* Phones: the list fits the screen */
-	@media (max-width: 48rem) {
-		.post-list {
-			width: auto;
-		}
+		white-space: nowrap;
 	}
 </style>

@@ -1,4 +1,7 @@
 <script>
+	// A blog post: "← Blog · date · read time", the title in Paper Mono, then the post.
+	// Its footnotes, if it has any, sit in the margin (see src/lib/posts.js), and under the post on phones.
+	import Arrow from '$lib/components/Arrow.svelte';
 	import { formatDate } from '$lib/posts.js';
 	let { data } = $props();
 	const Content = $derived(data.content);
@@ -9,68 +12,109 @@
 	{#if data.meta.summary}<meta name="description" content={data.meta.summary} />{/if}
 </svelte:head>
 
-<a href="/blog" class="back">← all posts</a>
-
 <article>
 	<header>
+		<p class="meta">
+			<a href="/blog" class="back"><Arrow dir="left" /> Blog</a>
+			<span aria-hidden="true">·</span>
+			<time datetime={data.meta.date}>{formatDate(data.meta.date)}</time>
+			<span aria-hidden="true">·</span>
+			<span>{data.minutes} min read</span>
+		</p>
 		<h1>{data.meta.title}</h1>
-		<time datetime={data.meta.date}>{formatDate(data.meta.date)}</time>
 	</header>
 
 	<div class="body">
 		<Content />
 	</div>
+
+	<!-- Phones have no margin, so the footnotes go under the post -->
+	{#if data.footnotes.length}
+		<ol class="phone-footnotes">
+			{#each data.footnotes as footnote, i}
+				<li><span class="number">{i + 1}</span> {footnote}</li>
+			{/each}
+		</ol>
+	{/if}
 </article>
 
 <style>
-	.back {
-		font-family: var(--mono);
-		font-size: 0.9rem;
+	/* "← Blog · 1 Oct 2026 · 4 min read": small, grey, the back link in deep pink */
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0 0 1rem;
+		font-size: var(--type-meta);
 		color: var(--muted);
+	}
+
+	.back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		color: var(--pink-deep);
 		text-decoration: none;
 	}
 
 	.back:hover {
-		color: var(--pink);
+		text-decoration: underline;
 	}
 
-	header {
-		margin: 2rem 0 2.5rem;
+	.back:focus-visible {
+		outline: 2px solid var(--text);
+		outline-offset: 2px;
 	}
 
-	/* Same size as every page title (set in app.css), with less space under it for the date */
+	/* The post's title: Paper Mono Medium, set a little tighter */
 	h1 {
-		margin: 0 0 0.75rem;
-	}
-
-	time {
+		margin-bottom: 1.5rem;
 		font-family: var(--mono);
-		font-weight: 700;
-		font-size: 1rem;
-		color: var(--accent);
+		font-size: min(var(--type-title), 3.25rem);
+		font-weight: 500;
 	}
 
-	/* Everything written in the .md files */
-	/* Post text: 16px */
+	/* The text keeps to about 620px wide, so lines stay easy to read */
 	.body {
-		font-size: 1rem;
+		max-width: 620px;
+		font-size: var(--type-small);
+		line-height: 1.7;
 	}
 
 	.body :global(h2) {
-		font-size: 1.6rem;
 		margin-top: 3rem;
+	}
+
+	/* Footnote numbers in deep pink */
+	.body :global(sup) {
+		font-size: 0.65em;
+		line-height: 0;
+		color: var(--pink-deep);
 	}
 
 	.body :global(img) {
 		margin: 2rem 0 0.5rem;
-		border-radius: 3px;
 	}
 
-	.body :global(img + em) {
+	/* Two pictures written one after the other sit side by side */
+	.body :global(p:has(> img + img)) {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		max-width: none;
+	}
+
+	.body :global(p:has(> img + img) img) {
+		width: 100%;
+		margin: 0;
+	}
+
+	.body :global(img + em),
+	.body :global(p:has(> img + img) + p > em:only-child) {
 		display: block;
-		font-family: var(--mono);
 		font-style: normal;
-		font-size: 0.85rem;
+		font-size: var(--type-meta);
 		color: var(--muted);
 	}
 
@@ -78,24 +122,41 @@
 		text-underline-offset: 3px;
 	}
 
-	/* Quotes and asides styled like the highlighted log note in the reference */
+	/* Quotes and asides: on a yellow highlight (text colour on it, 8.3:1) */
 	.body :global(blockquote) {
 		margin: 2.5rem 0;
-		font-family: var(--mono);
-		font-size: 1rem;
 		color: var(--accent);
 	}
 
 	.body :global(blockquote p) {
 		display: inline;
-		background: var(--highlight);
+		background: var(--sun);
 		box-decoration-break: clone;
 		-webkit-box-decoration-break: clone;
 		line-height: 1.8;
 	}
 
 	.body :global(code) {
-		font-family: var(--mono);
 		font-size: 0.95em;
+	}
+
+	.phone-footnotes {
+		display: none;
+	}
+
+	.number {
+		color: var(--pink-deep);
+	}
+
+	@media (max-width: 48rem) {
+		.phone-footnotes {
+			display: grid;
+			gap: 0.75rem;
+			margin: 3rem 0 0;
+			padding: 1.25rem 0 0;
+			border-top: 1px solid var(--line);
+			list-style: none;
+			font-size: var(--type-label);
+		}
 	}
 </style>

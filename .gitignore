@@ -2,6 +2,10 @@ node_modules
 .svelte-kit
 build
 # Array and MEG Honey font licences: do not publish those font files in a public repo.
-# Junicode is free to share (SIL Open Font License), so it is the one font that goes in.
+# Junicode, Cormorant Garamond, National Park and Paper Mono are free to share
+# (SIL Open Font License), so they go in.
 static/fonts/*
 !static/fonts/Junicode*.woff2
+!static/fonts/CormorantGaramond*.woff2
+!static/fonts/NationalPark*.woff2
+!static/fonts/PaperMono*.woff2

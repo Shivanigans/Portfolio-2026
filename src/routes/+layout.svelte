@@ -1,45 +1,55 @@
 <script>
-	// The frame round every page: the side panel on the left (logo, menu, note),
-	// and the page itself on the right. On phones the side panel becomes a band across the top.
+	// The frame round every page: a grey desk with a white sheet on it, and the margin to its
+	// left (logo, tabs and the page's note). The two are centred together on the desk.
+	// Tinkerings is different: its canvas fills the whole screen, and the margin floats on top
+	// in the same spot. On phones the margin becomes a band across the top with a menu button.
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
+	import Arrow from '$lib/components/Arrow.svelte';
 	import Starburst from '$lib/components/Starburst.svelte';
 	import BouncingLogo from '$lib/components/BouncingLogo.svelte';
-	import SocialIcon from '$lib/components/SocialIcon.svelte';
-	import { logoImage, logoStar, logoFace } from '$lib/stickers.js';
+	import LogoFace from '$lib/components/LogoFace.svelte';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
+	import { resumeLink } from '$lib/links.js';
+	import { logoImage, logoStar, awesomeImage } from '$lib/stickers.js';
 	import { popup } from '$lib/popup.svelte.js';
+	import { live } from '$lib/notes.svelte.js';
 	import '../app.css';
 
 	let { children } = $props();
 
 	const links = [
+		{ href: '/', label: 'Home' },
 		{ href: '/projects', label: 'Projects' },
 		{ href: '/tinkerings', label: 'Tinkerings' },
 		{ href: '/blog', label: 'Blog' },
 		{ href: '/about', label: 'About' }
 	];
 
-	// Links in the note at the bottom of the side panel
-	const behanceLink = 'https://www.behance.net/shivanigans';
-	const linkedinLink = 'https://www.linkedin.com/in/shivanisinghghoshi';
-	const instagramLink = 'https://www.instagram.com/_shivanigans_';
-	const resumeLink = 'https://drive.google.com/file/d/1E4UBo4NH8hVvh5J31Wnv1Z4iuO1KdUJo/view?usp=sharing';
-
 	// Pages where the logo leaves its spot and drifts around the screen.
 	// Remove a page from this list once it has real content. The 404 page always does it.
-	const bouncePages = ['/projects', '/about'];
+	const bouncePages = ['/about'];
 	const bouncing = $derived(!!page.error || bouncePages.includes(page.url.pathname));
 
 	// The star only spins on the home page
 	const spinning = $derived(!page.error && page.url.pathname === '/');
 	let logoSpot = $state();
 
-	// Pages that fill the whole space right of the side panel, edge to edge,
-	// instead of sitting in the usual centred column
-	const fullPages = ['/tinkerings'];
-	const full = $derived(fullPages.includes(page.url.pathname));
+	// Tinkerings is a canvas that fills the screen, with no sheet
+	const canvas = $derived(!page.error && page.url.pathname === '/tinkerings');
 
-	// The menu item just clicked, so it turns pink straight away while the next page loads
+	// The blog keeps its socials on one line; every other page has the socials table
+	const footer = $derived(page.url.pathname.startsWith('/blog') ? 'compact' : 'table');
+
+	// The margin note: the page's own (from its +page.js), unless the page has swapped it.
+	// A blog post with footnotes shows those instead.
+	const note = $derived(live.text ?? page.data.note ?? []);
+	const footnotes = $derived(page.data.footnotes ?? []);
+
+	// A paragraph that starts with a symbol, like '↘ Every walk', shows the symbol in pink
+	const marked = (text) => text.match(/^([^\p{L}\p{N}\s"'‘“(]+)\s+(.*)$/su);
+
+	// The tab just clicked, so it slides out straight away while the next page loads
 	let clicked = $state('');
 	// Phones: whether the menu is open. It closes after tapping a link.
 	let menuOpen = $state(false);
@@ -47,10 +57,13 @@
 	afterNavigate(() => {
 		clicked = '';
 		menuOpen = false;
+		live.text = null;
 	});
 
-	// A menu item counts as the current page for its own pages too, e.g. a blog post
-	const isHere = (href) => page.url.pathname === href || page.url.pathname.startsWith(href + '/');
+	// A tab counts as the current page for its own pages too, e.g. a blog post.
+	// Home only counts for the home page itself.
+	const isHere = (href) =>
+		href === '/' ? page.url.pathname === '/' : page.url.pathname === href || page.url.pathname.startsWith(href + '/');
 </script>
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && (menuOpen = false)} />
@@ -62,18 +75,24 @@
 	{/if}
 </svelte:head>
 
-<div class="frame">
-	<!-- While a project popup is open, the side panel can't be clicked or tabbed into -->
+<div class="group" class:canvas>
+	<!-- While a project popup is open, the margin can't be clicked or tabbed into -->
 	<aside class="side" inert={popup.open}>
 		<!-- Logo at the top. On the home page the star turns slowly (speed is set in .spin below). -->
 		<a href="/" class="home" aria-label="Home">
 			{#if bouncing}
-				<!-- Empty spot the logo sets off from; it's drifting around the screen instead -->
-				<span class="logo" bind:this={logoSpot}></span>
-			{:else if logoStar && logoFace}
+				<!-- The spot the logo sets off from. It's drifting around the screen instead, and as it
+				     leaves, it uncovers your "Don't forget to be awesome!" sticker underneath. -->
+				<span class="logo" bind:this={logoSpot}>
+					{#if awesomeImage}
+						<img class="awesome" src={awesomeImage} alt="Don’t forget to be awesome!" />
+					{/if}
+				</span>
+			{:else if logoStar}
 				<span class="logo">
 					<img class:spin={spinning} src={logoStar} alt="" />
-					<img class="face" src={logoFace} alt="" />
+					<!-- Off Home, pointing at the logo makes its thumbs pop up again -->
+					<LogoFace pop={!spinning} />
 				</span>
 			{:else if logoImage}
 				<span class="logo">
@@ -86,8 +105,6 @@
 			{/if}
 		</a>
 
-		<!-- Hover shows a light pink bar. The current page, or the one just clicked,
-		     gets the bright pink bar. -->
 		<!-- Phones only: three lines that open the menu, and turn into a cross when it is open -->
 		<button
 			type="button"
@@ -102,6 +119,8 @@
 			</span>
 		</button>
 
+		<!-- The tabs, tucked against the sheet. The current page (or the one just clicked)
+		     slides out and turns yellow. Pointing at a tab slides it out a little. -->
 		<nav id="site-nav" class:open={menuOpen}>
 			{#each links as link}
 				{@const here = isHere(link.href)}
@@ -111,78 +130,113 @@
 					aria-current={here ? 'page' : undefined}
 					onclick={() => (clicked = link.href)}
 				>
-					<span>{link.label}</span>
+					{link.label}
 				</a>
 			{/each}
 
 			<!-- Resume opens in a new tab, so it gets an arrow pointing up and out -->
 			<a href={resumeLink} target="_blank" rel="noopener">
-				<span>Resume</span>
-				<svg class="out" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 9.5l7-7M4 2.5h5.5V8" /></svg>
+				Resume <Arrow dir="out" />
 			</a>
-
-			<!-- Behance, LinkedIn and Instagram icons in a row: at the bottom of the side panel,
-			     or at the end of the menu on phones -->
-			<div class="social">
-				<a href={behanceLink} target="_blank" rel="noopener" aria-label="Behance"><SocialIcon name="behance" /></a>
-				<a href={linkedinLink} target="_blank" rel="noopener" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
-				<a href={instagramLink} target="_blank" rel="noopener" aria-label="Instagram"><SocialIcon name="instagram" /></a>
-			</div>
 		</nav>
 
+		<!-- The page's note, or a blog post's footnotes -->
+		{#if footnotes.length}
+			<section class="notes" aria-labelledby="notes-heading">
+				<h2 id="notes-heading"><span aria-hidden="true">✳</span> footnotes</h2>
+				<ol>
+					{#each footnotes as footnote, i}
+						<li id="footnote-{i + 1}"><span class="number">{i + 1}</span> {footnote}</li>
+					{/each}
+				</ol>
+			</section>
+		{:else if note.length}
+			<section class="notes" aria-labelledby="notes-heading">
+				<h2 id="notes-heading"><span aria-hidden="true">✳</span> notes</h2>
+				<!-- Home changes its note as you scroll, so it's read out when it changes -->
+				<div class="note-text" aria-live="polite">
+					{#key note}
+						<div class="note-fade">
+							{#each note as paragraph}
+								{@const mark = marked(paragraph)}
+								<p>
+									{#if mark}<span class="mark" aria-hidden="true">{mark[1]}</span> {mark[2]}{:else}<span
+											class="square"
+											aria-hidden="true"
+										></span>{paragraph}{/if}
+								</p>
+							{/each}
+						</div>
+					{/key}
+				</div>
+			</section>
+		{/if}
 	</aside>
 
 	{#if bouncing && logoSpot}
 		<BouncingLogo from={logoSpot} />
 	{/if}
 
-	<main class:full>
-		{@render children()}
-	</main>
+	{#if canvas}
+		<!-- Tinkerings: the canvas fills the screen behind the margin, with its slim footer
+		     along the bottom -->
+		<!-- While a project is open, the canvas comes forward, so the popup covers the margin too -->
+		<main class="canvas-page" class:raised={popup.open}>
+			{@render children()}
+		</main>
+		<div class="canvas-footer" inert={popup.open}>
+			<SiteFooter variant="bar" />
+		</div>
+	{:else}
+		<main class="sheet">
+			{@render children()}
+			<SiteFooter variant={footer} />
+		</main>
+	{/if}
 </div>
 
 <style>
-	.frame {
+	/* The margin (230px) and the sheet (880px). The sheet sits in the middle of the window, with
+	   the margin hanging off its left: the right gets an empty space as wide as the margin.
+	   On windows too narrow for that, the empty space gives way first, then the sheet shrinks
+	   rather than the page scrolling sideways.
+	   The sheet starts 56px from the top and runs off the bottom of the screen. */
+	.group {
 		display: grid;
-		/* --side: the side panel width. --logo: the star logo size, 256px, or 78% of the panel
-		   width on narrower windows, or 24% of the screen height on short screens, so the
-		   side panel always fits on one screen. The logo row is sized to fit the logo. */
-		--side: clamp(13rem, 18vw, 22rem);
-		--logo: min(256px, calc(var(--side) * 0.78), 24vh);
-		--logo: min(256px, calc(var(--side) * 0.78), 24dvh);
-		grid-template-columns: var(--side) minmax(0, 1fr);
-		/* dvh is the height you can actually see. On iPads and phones, plain vh also counts
-		   the bit hidden behind the browser bars, which made the page scroll. */
+		grid-template-columns: var(--side) minmax(0, var(--sheet));
+		justify-content: center;
+		padding-top: var(--sheet-top);
+		padding-right: clamp(0px, 100% - var(--sheet) - var(--side), var(--side));
 		min-height: 100vh;
 		min-height: 100dvh;
 	}
 
-	/* Side panel: logo on top, the menu, then a boxed note at the bottom.
-	   It stays put while the page beside it scrolls. */
+	/* The margin stays put while the sheet scrolls */
 	.side {
 		position: sticky;
-		top: 0;
-		height: 100vh;
-		height: 100dvh;
-		overflow-y: auto; /* only on very short screens, so the note is never cut off */
-		display: grid;
-		grid-template-rows: calc(var(--logo) / 0.78) 1fr;
-		min-height: 0;
-		border-right: 1px solid var(--line); /* full-height divider */
+		top: var(--sheet-top);
+		align-self: start;
+		/* Never scrolls on its own: the gaps below shrink on shorter windows instead */
+		overflow: clip visible; /* the spinning star's see-through corners poke out as it turns */
+		padding-bottom: 2rem;
 	}
 
 	.home {
-		display: grid;
-		place-items: center;
-		min-height: 0;
+		display: block;
+		width: 200px;
 	}
 
-	/* Always square, at the --logo size set on .frame */
+	.home:focus-visible {
+		outline: 2px solid var(--text);
+		outline-offset: 2px;
+	}
+
+	/* The logo: a 200px square */
 	.logo {
 		position: relative;
 		display: block;
-		width: var(--logo);
-		height: var(--logo);
+		width: 200px;
+		height: 200px;
 	}
 
 	.logo img {
@@ -191,13 +245,22 @@
 		height: 100%;
 	}
 
-	.logo .face {
-		position: absolute;
-		inset: 0;
+	/* The sticker under the logo: it settles in just as the logo drifts off it. It's drawn as big
+	   as the star's points reach (its picture has less empty space round it, hence the padding). */
+	.logo .awesome {
+		padding: 9px;
+		animation: uncover 0.5s 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+	}
+
+	@keyframes uncover {
+		from {
+			opacity: 0;
+			transform: scale(0.9);
+		}
 	}
 
 	.monogram {
-		font-weight: 700;
+		font-weight: 600;
 		font-size: 1.4rem;
 	}
 
@@ -212,40 +275,47 @@
 		}
 	}
 
-	/* Menu: full-width rows. Light pink on hover, bright pink when selected. */
+	/* The tabs: 56px under the logo (less on short windows), lined up on the right so they tuck
+	   against the sheet. Each is 140px wide; the current one slides out to 162px. */
 	nav {
 		display: flex;
 		flex-direction: column;
-		gap: 0.4dvh;
-		padding-top: 5dvh;
+		align-items: flex-end;
+		gap: 8px;
+		margin-top: clamp(24px, 100dvh - 820px, 56px);
 	}
 
 	nav a {
 		display: flex;
 		align-items: center;
-		min-height: 6.2dvh;
-		padding: 0.2rem 1.75rem;
-		font-family: var(--sticker); /* Junicode */
-		font-size: 1.75rem; /* 28px */
-		font-weight: 500; /* Junicode Condensed Medium */
-		line-height: 1.1;
-		color: var(--ink);
+		gap: 0.4em;
+		width: 140px;
+		min-height: 34px;
+		padding: 0 18px;
+		background: var(--greige);
+		font-family: var(--display);
+		font-size: var(--type-label);
+		font-weight: 500;
+		text-transform: uppercase;
+		color: var(--text);
 		text-decoration: none;
-		transition: background 0.15s ease;
+		transition:
+			width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+			background-color 0.15s ease;
 	}
 
-	/* Honey leaves extra room under the letters, which made them sit high in the pink bar.
-	   This trims the text to the top of the capitals and the baseline, so it centres exactly. */
-	nav a span {
-		text-box: trim-both cap alphabetic;
-	}
-
+	/* Pointing at a tab slides it out a little and tints it soft pink.
+	   The current page slides out further, in the bright pink. */
 	nav a:hover {
+		width: 148px;
 		background: var(--pink-soft);
+		color: var(--text);
 	}
 
 	nav a.selected {
+		width: 162px;
 		background: var(--pink);
+		color: var(--on-pink);
 	}
 
 	nav a:focus-visible {
@@ -253,58 +323,171 @@
 		outline-offset: -2px;
 	}
 
-	/* The arrow after Resume: 14px, a thin line like the Tinkerings arrows */
-	.out {
-		width: 0.5em;
-		height: 0.5em;
-		margin-left: 0.3em;
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 1.4;
-		stroke-linecap: round;
-		stroke-linejoin: round;
+	/* The note: 64px under the tabs (less on short windows) */
+	.notes {
+		margin-top: clamp(24px, 100dvh - 800px, 64px);
+		padding: 0 1rem 0 0.75rem;
+		font-size: var(--type-label);
+		line-height: 1.55;
 	}
 
-	/* Icons pushed to the bottom of the side panel, lined up with the menu words.
-	   36px icons, 36px apart. */
-	.social {
+	.notes h2 {
+		margin: 0 0 0.6rem;
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: var(--pink-deep);
+	}
+
+	.notes p,
+	.notes ol {
+		margin: 0;
+	}
+
+	/* No word left alone on a note's last line */
+	.notes p,
+	.notes li {
+		text-wrap: pretty;
+	}
+
+	.notes p + p,
+	.notes li + li {
+		margin-top: 0.85rem;
+	}
+
+	.notes ol {
+		padding: 0;
+		list-style: none;
+	}
+
+	.mark,
+	.number {
+		color: var(--pink-deep);
+	}
+
+	/* A new note fades in over the old one */
+	.note-text {
+		display: grid;
+	}
+
+	.note-fade {
+		grid-area: 1 / 1;
+		animation: note-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	/* As it comes in, it fades up from faint and rises a few pixels into place */
+	@keyframes note-in {
+		from {
+			opacity: 0;
+			transform: translateY(5px);
+		}
+	}
+
+	/* The small pink square at the start of a note (a note with its own mark, like ✥, keeps that) */
+	.square {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		margin-right: 0.6em;
+		vertical-align: 0.1em;
+		background: var(--pink);
+	}
+
+	/* The sheet: white, at least a screen tall, 72px of room at the top and 80px at the sides.
+	   No edge or shadow at the bottom: it just carries on. The footer sits at the bottom on short pages. */
+	.sheet {
+		--fold: 44px;
+		position: relative;
 		display: flex;
-		gap: 36px;
-		margin-top: auto;
-		padding: 2rem 1.75rem 2.5rem;
+		flex-direction: column;
+		min-width: 0;
+		min-height: calc(100dvh - var(--sheet-top));
+		padding: 72px clamp(1.5rem, 6vw, 80px) 0;
+		background: var(--bg);
 	}
 
-	/* Only the colour changes on hover: dark to pink, no pink bar like the menu words */
-	nav .social a {
-		display: block;
-		width: 36px;
-		height: 36px;
-		min-height: 0;
-		padding: 0;
-		color: var(--ink);
+	/* The sheet's top right corner is folded down, like a page dog-eared: the corner itself shows
+	   the desk, and the folded flap is the back of the paper, faintly grey, with a soft shadow.
+	   Drawn on top of the sheet rather than cut out of it, so nothing inside the sheet gets clipped. */
+	.sheet::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: var(--fold);
+		height: var(--fold);
+		background: linear-gradient(
+			to bottom left,
+			var(--desk) 50%,
+			color-mix(in srgb, var(--text) 9%, var(--bg)) 50%
+		);
+		filter: drop-shadow(-2px 2px 2px color-mix(in srgb, var(--text) 14%, transparent));
+		pointer-events: none;
 	}
 
-	nav .social a:hover {
-		background: none;
-		color: var(--pink);
+	/* Tinkerings: the canvas fills the whole screen behind everything */
+	.canvas-page {
+		position: fixed;
+		inset: 0;
+		background: var(--desk);
 	}
 
-	/* Usual pages: a centred column with room above and below */
-	/* Usual pages: 100px in from the side panel line. The top padding puts the page title
-	   level with the top of the star logo: the logo is centred in its row, and the star
-	   starts 8.2% of the way into the logo image. */
-	main {
-		width: 100%;
-		max-width: calc(var(--column) + 100px + 1rem);
-		margin: 0;
-		padding: calc(0.223 * var(--logo)) 1rem 8rem 100px;
+	/* While a project popup or chaos mode is open, the canvas comes forward so they cover the
+	   margin and the footer bar too */
+	.canvas-page.raised,
+	.canvas-page:has(:global(.hypno)) {
+		z-index: 4;
 	}
 
-	/* Full pages (Tinkerings) fill the space themselves */
-	main.full {
-		max-width: none;
-		margin: 0;
-		padding: 0;
+	/* The margin floats on the canvas, on a soft patch of the desk colour so it stays readable */
+	.canvas .side {
+		position: relative;
+		top: auto; /* no sticky offset here, or it would sit 56px lower than on the other pages */
+		max-height: none;
+		z-index: 2;
+		overflow: visible;
+		pointer-events: none;
+	}
+
+	.canvas .side > * {
+		pointer-events: auto;
+	}
+
+	.canvas .side::before {
+		content: '';
+		position: absolute;
+		inset: -2.5rem -2rem 0 -3rem;
+		z-index: -1;
+		background: var(--desk);
+		mask-image: radial-gradient(closest-side, black 70%, transparent);
+		mask-size: 100% 100%;
+	}
+
+	/* The canvas is the whole page, so the page itself never scrolls (dragging and the
+	   trackpad move the canvas instead). Phones get a plain list that scrolls as usual. */
+	@media (min-width: 48.01rem) {
+		:global(html:has(.group.canvas)) {
+			overflow: hidden;
+		}
+	}
+
+	/* Very short windows: tighter gaps (the logo keeps its size), so the note still fits above the footer */
+	@media (min-width: 48.01rem) and (max-height: 48rem) {
+		.canvas nav {
+			margin-top: 32px;
+		}
+
+		.canvas .notes {
+			margin-top: 32px;
+		}
+	}
+
+	/* The slim footer, along the bottom of the canvas */
+	.canvas-footer {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 3;
 	}
 
 	/* The menu button only shows on phones */
@@ -313,7 +496,7 @@
 		padding: 0.75rem;
 		border: 0;
 		background: none;
-		color: var(--ink);
+		color: var(--text);
 		cursor: pointer;
 	}
 
@@ -332,7 +515,9 @@
 		display: block;
 		height: 2px;
 		background: currentColor;
-		transition: transform 0.2s ease, opacity 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			opacity 0.2s ease;
 	}
 
 	/* The cross: lines shrink from 24px to 18px long (scaleX 0.75) */
@@ -348,93 +533,87 @@
 		transform: translateY(-7px) rotate(-45deg) scaleX(0.75);
 	}
 
-	/* Phones: the side panel splits up. The logo and menu button make a band across the top,
-	   and the links (with the icons) drop down below the logo when the menu is opened. */
+	/* Phones (not designed yet): the margin becomes a band across the top, the logo on the left
+	   and the menu button on the right. The tabs drop down under it when the menu is opened.
+	   The note is left out. */
 	@media (max-width: 48rem) {
-		/* Rows: logo and menu button, the links (when open), then the page */
-		.frame {
-			grid-template-columns: auto minmax(0, 1fr);
-			grid-template-rows: auto auto 1fr;
+		.group {
+			display: block;
+			padding-top: 0;
+			padding-right: 0;
 		}
 
-		/* The side panel lets its parts sit straight in the rows above */
 		.side {
-			display: contents;
+			position: static;
+			display: grid;
+			grid-template-columns: auto auto;
+			justify-content: space-between;
+			align-items: center;
+			max-height: none;
+			overflow: visible;
+			padding: 0.75rem 0.75rem 0.75rem 1rem;
 		}
 
-		.home {
-			grid-row: 1;
-			padding: 0.75rem;
-		}
-
-		/* Logo on phones: 114px wide (grown by the same share as desktop, 180px to 256px) */
+		.home,
 		.logo {
-			width: 114px;
-			height: 114px;
+			width: 72px;
+			height: 72px;
 		}
 
 		.menu-button {
-			grid-row: 1;
 			display: block;
-			justify-self: end;
-			/* The lines sit as far in from the right edge as the star sits from the left
-			   (12px padding + the star starting 8.2% into the 114px logo = 21px) */
-			margin-right: calc(114px * 0.082);
 		}
 
-		/* Hidden until the menu is opened, then full-width rows like on desktop */
 		nav {
 			display: none;
-			grid-row: 2;
 			grid-column: 1 / -1;
-			gap: 0;
-			padding: 0 0 0.75rem;
+			align-items: stretch;
+			margin-top: 0.75rem;
 		}
 
 		nav.open {
 			display: flex;
 		}
 
-		nav a {
-			min-height: 3.25rem;
-			padding: 0.5rem 1rem;
-			font-size: 1.5rem;
+		nav a,
+		nav a:hover,
+		nav a.selected {
+			width: auto;
+			min-height: 44px;
 		}
 
-		/* Line under the band (and under the links when the menu is open) */
-		main {
-			grid-row: 3;
-			grid-column: 1 / -1;
-			border-top: 1px solid var(--line);
-			max-width: none;
-			padding: 2.5rem 1rem 5rem;
+		.notes {
+			display: none;
 		}
 
-		/* Phones: the icons sit in a row at the end of the open menu.
-		   28px icons, each with a 44px tap area, lined up with the menu words. */
-		.social {
-			gap: 0.5rem;
-			margin-top: 0;
-			padding: 0.5rem calc(1rem - 8px) 0;
+		.sheet {
+			min-height: 0;
+			padding: 2.5rem 1.25rem 0;
 		}
 
-		nav .social a {
-			width: 44px;
-			height: 44px;
-			padding: 8px;
+		/* Tinkerings on phones: a plain list on the desk, no floating margin */
+		.canvas .side::before {
+			display: none;
+		}
+
+		.canvas-page {
+			position: static;
+		}
+
+		.canvas-footer {
+			position: static;
 		}
 	}
 
-	/* Visitors who turn off motion in their settings see the logo still */
+	/* Visitors who turn off motion in their settings see the logo still, and nothing slides */
 	@media (prefers-reduced-motion: reduce) {
-		.spin {
+		.spin,
+		.note-fade,
+		.logo .awesome {
 			animation: none;
 		}
 
-		.bars span {
-			transition: none;
-		}
-
+		.bars span,
 		nav a {
 			transition: none;
 		}

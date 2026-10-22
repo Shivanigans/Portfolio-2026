@@ -157,7 +157,7 @@
 	.count,
 	.hint {
 		margin: 0;
-		font-size: 0.8rem;
+		font-size: var(--type-label);
 		color: var(--muted);
 		text-align: center;
 	}
@@ -239,7 +239,7 @@
 	.who {
 		margin: 0;
 		font-family: 'Bellefair', Georgia, serif;
-		font-size: 1rem;
+		font-size: var(--type-small);
 		color: #5a5a55;
 	}
 

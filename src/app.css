@@ -1,6 +1,7 @@
 /*
-  Visual direction: Figma draft (Website, node 17-35).
-  Off-white page, one centred column, DM Sans throughout, yellow starburst stickers.
+  Visual direction: the redesign handover (22 Oct 2026).
+  A grey desk, a white sheet that runs off the bottom of the screen, the logo, tabs and notes
+  in the margin to its left. National Park for headings, Paper Mono for everything else.
 */
 
 /* MEG Honey, used for sticker lettering. The licence allows web use but not sharing
@@ -12,58 +13,100 @@
 	font-display: swap;
 }
 
-/* Junicode (Ansund), for the menu and page titles. Latin letters only, to keep it light.
-   Free to share (SIL Open Font License), so it's in git and works on the live site. */
+/* National Park, for headlines, section headings and card titles. Paper Mono, for body text,
+   labels, the tabs, buttons and notes. Both are SIL Open Font License, so the files are in the repo. */
 @font-face {
-	font-family: 'Junicode';
-	src: url('/fonts/Junicode.woff2') format('woff2');
-	font-weight: 400;
-	font-display: swap;
-}
-
-/* Junicode Condensed Medium, for the menu */
-@font-face {
-	font-family: 'Junicode';
-	src: url('/fonts/Junicode-CondMedium.woff2') format('woff2');
+	font-family: 'National Park';
+	src: url('/fonts/NationalPark-Medium.woff2') format('woff2');
 	font-weight: 500;
 	font-display: swap;
 }
 
-/* Junicode Condensed SemiBold, for page titles */
 @font-face {
-	font-family: 'Junicode';
-	src: url('/fonts/Junicode-CondSemiBold.woff2') format('woff2');
+	font-family: 'National Park';
+	src: url('/fonts/NationalPark-SemiBold.woff2') format('woff2');
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Paper Mono';
+	src: url('/fonts/PaperMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Paper Mono';
+	src: url('/fonts/PaperMono-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Paper Mono';
+	src: url('/fonts/PaperMono-SemiBold.woff2') format('woff2');
 	font-weight: 600;
 	font-display: swap;
 }
 
 :root {
-	--bg: #ffffff;
-	--text: #160c28;
-	--ink: #160c28; /* project descriptions */
-	--muted: #7f7f7f;
-	--line: #aeaeae;
+	--bg: #ffffff; /* paper: the sheet, the project panel */
+	--desk: #f6f6f6; /* the page round the sheet, and the Tinkerings canvas */
+	--greige: #ece8e1; /* tabs, picture placeholders */
+	--text: #413c3c; /* all text, axis lines, label outlines. 10.9:1 on white, 10.0:1 on the desk */
+	--ink: var(--text); /* project descriptions */
+	/* small grey text: the text colour at 75%, 5.1:1 on white. Never lighter than this. */
+	--muted: color-mix(in srgb, var(--text) 75%, var(--bg));
+	--line: color-mix(in srgb, var(--text) 16%, transparent); /* dividers, card outlines */
 	--card: #ffffff;
-	--sun: #f9e278; /* starburst yellow */
-	--pink: #e963a8;
-	--pink-soft: color-mix(in srgb, var(--pink) 30%, var(--bg)); /* menu hover */
+	--sun: #f9e278; /* starburst yellow: the logo, the "away" status, blog quotes. Only ever behind text-colour words (8.3:1) */
+	/* The live status line: tally marks, grass and the status-label highlight. */
+	--status-green: #4fbe00;
+	--status-online-bg: color-mix(in srgb, var(--status-green) 25%, var(--bg));
+	--pink: #e963a8; /* decoration only: square markers, stars, hover outlines. Never text, never behind text. */
+	--pink-soft: color-mix(in srgb, var(--pink) 30%, var(--bg)); /* the hover state: tabs, filters, buttons */
+	/* Words on the bright pink (the current tab, the chosen filter). The text colour only reaches
+	   3.1:1 on it, so these use the darker aubergine ink: 5.4:1. */
+	--on-pink: #160c28;
+	--pink-deep: #b8236f; /* pink for text and borders: notes heading, back links, buttons (6.0:1 on white) */
+	--tooltip-bg: var(--pink-deep); /* the story tooltip on Home: white text on deep pink (6.0:1) */
 	--blue: #1789fc;
-	--shadow: 0 1px 6px rgba(65, 60, 50, 0.14);
+	--shadow: 0 1px 6px color-mix(in srgb, var(--text) 14%, transparent);
 
-	--sans: 'DM Sans', system-ui, sans-serif;
-	/* Menu and page titles. To switch to MEG Honey once it can go online:
-	   'Honey', Georgia, serif */
-	--sticker: 'Junicode', Georgia, serif;
+	--mono: 'Paper Mono', ui-monospace, monospace;
+	--display: 'National Park', system-ui, sans-serif;
+	--tracking: -0.02em; /* -2%: letter spacing for both National Park and Paper Mono */
+	--display-spacing: var(--tracking);
+	/* Older names, still used round the site */
+	--sans: var(--mono);
+	--sticker: var(--display);
+	--sticker-weight: 500;
+	--sticker-spacing: var(--display-spacing);
+
+	/* Text sizes, smallest to largest. Every small or body text uses one of these. */
+	--type-meta: 0.75rem; /* 12px: captions, dates, card descriptions */
+	--type-label: 0.8125rem; /* 13px: notes, tags, the socials, small print */
+	--type-caption: 0.875rem; /* 14px: project names on cards, buttons */
+	--type-small: 0.9375rem; /* 15px: body text */
+	--type-body: 1rem; /* 16px: intros, larger body text */
+
+	/* Headings, smallest to largest */
+	--type-card: 1.375rem; /* 22px: card titles */
+	--type-section: 1.75rem; /* 28px: section headings */
+	--type-title: 4rem; /* 64px: page titles and the home hello */
 
 	/* Older names the blog pages still use */
-	--display: var(--sans);
-	--mono: var(--sans);
 	--accent: var(--text);
 	--marker: var(--pink);
-	--highlight: color-mix(in srgb, var(--text) 5%, var(--bg));
 
-	--column: 41.5rem; /* the project column */
-	--page: 72rem; /* header and wide bits */
+	/* The centred group: the margin column and the sheet beside it */
+	--side: 230px;
+	--sheet: 880px;
+	--sheet-top: 56px;
+	--column: 41.5rem; /* the reading column */
+	--matrix-margin: clamp(0.75rem, 1.6vw, 1.75rem);
+	--page: 72rem;
 }
 
 * {
@@ -72,12 +115,15 @@
 
 body {
 	margin: 0;
-	background: var(--bg);
+	background: var(--desk);
 	color: var(--text);
-	font-family: var(--sans);
-	font-size: 1.125rem;
-	line-height: 1.45;
-	text-wrap: pretty;
+	font-family: var(--mono);
+	font-size: var(--type-small);
+	line-height: 1.6;
+	letter-spacing: var(--tracking);
+	/* Plain wrapping: each line fills up before the next starts. ("pretty" moved words down early
+	   to avoid short last lines, which made lines break before they were full.) */
+	text-wrap: wrap;
 }
 
 a {
@@ -85,49 +131,61 @@ a {
 	transition: color 0.15s ease;
 }
 
-/* Links turn pink on hover (the menu keeps its own look) */
+/* Links turn deep pink on hover, so they stay easy to read (the tabs keep their own look) */
 a:hover {
-	color: var(--pink);
+	color: var(--pink-deep);
 }
 
-/* Highlighted text turns pink, on a soft pink background */
+/* Highlighted text turns deep pink, on a soft pink background */
 ::selection {
-	color: var(--pink);
+	color: var(--pink-deep);
 	background: color-mix(in srgb, var(--pink) 18%, var(--bg));
 }
 
 h1,
-h2 {
+h2,
+h3 {
 	font-family: var(--display);
-	font-weight: 600;
+	font-weight: 500;
+	letter-spacing: var(--display-spacing);
+	color: var(--text);
 }
 
-/* Page titles: MEG Honey at the menu size, 28px (24px on phones), on one line.
-   The space above the capital letters is trimmed, so the top of the title
-   lines up exactly with the top of the star logo. */
+/* Page titles: National Park at 64px. The space above the capitals is trimmed,
+   so the top of the title sits exactly at the top of the sheet's padding. */
 h1 {
 	margin: 0 0 1.5rem;
-	font-family: var(--sticker);
-	font-size: 1.75rem;
-	font-weight: 600; /* Junicode Condensed SemiBold */
-	line-height: 1.15;
-	white-space: nowrap;
+	font-size: var(--type-title);
+	font-weight: 600;
+	line-height: 1.02;
+	text-wrap: balance;
 	text-box: trim-start cap alphabetic;
 }
 
-/* Phones are too narrow for long titles on one line, so they wrap there */
-@media (max-width: 48rem) {
-	h1 {
-		font-size: 1.5rem;
-		white-space: normal;
-		text-wrap: wrap; /* fill each line before moving to the next */
+/* Section headings: 28px */
+h2 {
+	margin: 0 0 1rem;
+	font-size: var(--type-section);
+	line-height: 1.15;
+}
+
+/* Smaller screens get smaller titles, so long ones still fit */
+@media (max-width: 64rem) {
+	:root {
+		--type-title: 3rem;
 	}
 }
 
-main {
-	max-width: var(--column);
-	margin: 0 auto;
-	padding: 0 1rem;
+@media (max-width: 48rem) {
+	:root {
+		--type-title: 2.5rem;
+		--type-section: 1.5rem;
+	}
+}
+
+/* Buttons keep the page's letter spacing too (browsers reset it on them) */
+button {
+	letter-spacing: inherit;
 }
 
 img,
@@ -137,10 +195,10 @@ video {
 	display: block;
 }
 
-/* Small bold section labels */
+/* Small section labels */
 .label {
-	font-weight: 700;
-	font-size: 1rem;
+	font-weight: 500;
+	font-size: var(--type-small);
 	margin: 3.5rem 0 1rem;
 }
 
@@ -152,4 +210,84 @@ video {
 	overflow: hidden;
 	clip-path: inset(50%);
 	white-space: nowrap;
+}
+
+/* A project's tags, in grey, separated by middle dots: "Data viz · Creative coding" */
+.tag {
+	font-size: var(--type-meta);
+	line-height: 1.4;
+	color: var(--muted);
+}
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.tags .tag + .tag::before {
+	content: '·';
+	margin: 0 0.6em;
+}
+
+/* The outlined button: "View all projects", "Send email", "Explore the project".
+   Text-colour words in a deep pink frame, square corners. */
+.pill-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	min-height: 40px;
+	padding: 0 1rem;
+	border: 1px solid var(--pink-deep);
+	background: var(--bg);
+	font-family: var(--mono);
+	font-size: var(--type-label);
+	font-weight: 500;
+	color: var(--text);
+	text-decoration: none;
+	transition: background-color 0.15s ease;
+}
+
+/* Pointing at it fills it with the soft pink. The words stay dark instead of turning pink like links do. */
+.pill-button:hover {
+	color: var(--text);
+	background: var(--pink-soft);
+}
+
+.pill-button:focus-visible {
+	outline: 2px solid var(--text);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pill-button {
+		transition: none;
+	}
+}
+
+/* Scroll reveal, set up by use:reveal (src/lib/reveal.js): a piece waiting below the screen
+   sits 24px lower and hidden, then fades and slides up once as it comes into view */
+.reveal {
+	transition:
+		opacity 0.45s ease-out,
+		transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.waiting {
+	opacity: 0;
+	transform: translateY(24px);
+}
+
+/* People who have asked for less motion see everything straight away */
+@media (prefers-reduced-motion: reduce) {
+	.reveal {
+		transition: none;
+	}
+
+	.reveal.waiting {
+		opacity: 1;
+		transform: none;
+	}
 }

@@ -6,6 +6,6 @@ Your sticker images:
   Shivanigans-bounce-blue.png    the bouncing logo's colours. It switches to another
   Shivanigans-bounce-pink.png    one at random each time it touches an edge.
   Shivanigans-bounce-yellow.png
-  DFTBA-icon.png                 "Don't forget to be awesome!" sticker (not used at the moment)
+  DFTBA-icon.png                 "Don't forget to be awesome!" sticker, bottom right of Home
 
 To swap one, replace the file and keep the same name.

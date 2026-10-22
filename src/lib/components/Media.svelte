@@ -1,17 +1,30 @@
 <script>
 	// Shows an image, GIF or video. Videos play silently on a loop.
 	// `src` is a file name in static/tinkerings, or a full path starting with '/'.
-	// With no src it shows a clearly marked placeholder box.
-	let { src = '', alt = '' } = $props();
+	// With no src it shows an empty box that says "wow so empty".
+	// calm: for people who have asked their device for less motion, the video stays
+	// still on its first frame instead of playing
+	import { onMount } from 'svelte';
+
+	let { src = '', alt = '', calm = false } = $props();
 
 	const url = $derived(src.startsWith('/') ? src : `/tinkerings/${encodeURIComponent(src)}`);
 	const isVideo = $derived(/\.(mp4|webm)$/i.test(src));
+
+	let video = $state();
+	onMount(() => {
+		if (calm && video && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			video.autoplay = false;
+			video.pause();
+			video.currentTime = 0;
+		}
+	});
 </script>
 
 {#if !src}
-	<div class="placeholder"><span>PLACEHOLDER image</span></div>
+	<div class="placeholder"><span>wow so empty</span></div>
 {:else if isVideo}
-	<video src={url} autoplay muted loop playsinline aria-label={alt}></video>
+	<video bind:this={video} src={url} autoplay muted loop playsinline aria-label={alt}></video>
 {:else}
 	<img src={url} {alt} loading="lazy" />
 {/if}
@@ -24,14 +37,15 @@
 		height: auto;
 	}
 
+	/* A greige box with its label in the middle, until the real picture is in */
 	.placeholder {
-		aspect-ratio: 16 / 9;
+		aspect-ratio: 4 / 3;
 		display: grid;
 		place-items: center;
-		background: var(--card);
-		outline: 1px dashed var(--line);
-		outline-offset: -1px;
-		font-size: 0.75rem;
-		color: var(--muted);
+		padding: 1rem;
+		background: var(--greige);
+		font-size: var(--type-meta);
+		text-align: center;
+		color: var(--text);
 	}
 </style>

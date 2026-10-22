@@ -1,5 +1,12 @@
 // Finds every .md file in src/posts and reads its details (title, date, summary).
 // You never need to edit this file. Just add posts to src/posts.
+//
+// Footnotes: number them in the text with <sup>1</sup>, <sup>2</sup> and so on, and list them
+// in the post's details block. They show in the margin beside the post (under it on phones):
+//
+//   footnotes:
+//     - Slice Board, my task tracker, now lives in my browser.
+//     - Took three tries.
 
 export function getPosts() {
 	const files = import.meta.glob('/src/posts/*.md', { eager: true });

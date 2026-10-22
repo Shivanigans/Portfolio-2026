@@ -214,13 +214,13 @@
 		margin: 0;
 		max-width: 13rem;
 		text-align: right;
-		font-size: 0.95rem;
+		font-size: var(--type-small);
 		line-height: 1.35;
 	}
 
 	.hint span {
 		color: var(--muted);
-		font-size: 0.85rem;
+		font-size: var(--type-caption);
 	}
 
 	.arrow {
@@ -306,7 +306,7 @@
 		transform: translateX(-50%);
 		white-space: nowrap;
 		font: inherit;
-		font-size: 0.85rem;
+		font-size: var(--type-caption);
 		font-weight: 600;
 		color: var(--text);
 		padding: 0.4rem 0.7rem;
@@ -327,7 +327,7 @@
 		background: var(--text);
 		color: var(--bg);
 		border-radius: 6px;
-		font-size: 0.9rem;
+		font-size: var(--type-caption);
 		white-space: nowrap;
 		opacity: 0;
 		pointer-events: none;
@@ -346,7 +346,7 @@
 
 		.hint {
 			max-width: 9rem;
-			font-size: 0.85rem;
+			font-size: var(--type-caption);
 		}
 
 		.toast {
