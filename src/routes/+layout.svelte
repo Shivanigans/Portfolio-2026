@@ -68,17 +68,15 @@
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && (menuOpen = false)} />
 
-<!-- Your portrait sticker as the browser tab icon -->
+<!-- The yellow star (static/favicon.png) as the browser tab icon -->
 <svelte:head>
-	{#if logoImage}
-		<link rel="icon" type="image/png" href={logoImage} />
-	{/if}
+	<link rel="icon" type="image/png" href="/favicon.png" />
 </svelte:head>
 
 <div class="group" class:canvas>
 	<!-- While a project popup is open, the margin can't be clicked or tabbed into -->
 	<aside class="side" inert={popup.open}>
-		<!-- Logo at the top. On the home page the star turns slowly (speed is set in .spin below). -->
+		<!-- Logo at the top. On the home page the star turns while it is pointed at (see .spin below). -->
 		<a href="/" class="home" aria-label="Home">
 			{#if bouncing}
 				<!-- The spot the logo sets off from. It's drifting around the screen instead, and as it
@@ -264,9 +262,15 @@
 		font-size: 1.4rem;
 	}
 
-	/* One full turn every 20 seconds. Lower the number to spin faster. */
+	/* Home: the star holds still, and turns only while the logo is pointed at (or tabbed to).
+	   It stops where it got to. One full turn every 20 seconds; lower the number to spin faster. */
 	.spin {
-		animation: spin 20s linear infinite;
+		animation: spin 20s linear infinite paused;
+	}
+
+	.home:hover .spin,
+	.home:focus-visible .spin {
+		animation-play-state: running;
 	}
 
 	@keyframes spin {
