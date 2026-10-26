@@ -214,7 +214,7 @@
 		margin: 0;
 		max-width: 13rem;
 		text-align: right;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		line-height: 1.35;
 	}
 

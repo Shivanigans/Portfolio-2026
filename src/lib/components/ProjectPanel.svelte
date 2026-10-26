@@ -3,6 +3,7 @@
 	// and shrinks back into the card of whichever project is showing when it closes.
 	// Everything it shows comes from src/lib/tinkerings.js.
 	import { onMount } from 'svelte';
+	import { dev } from '$app/environment';
 	import Arrow from '$lib/components/Arrow.svelte';
 	import Media from '$lib/components/Media.svelte';
 	import QuoteStack from '$lib/components/QuoteStack.svelte';
@@ -216,8 +217,9 @@
 									>{:else}{part.text}{/if}{/each}
 						</p>
 					{/each}
-				{:else}
-					<!-- Only ever seen on your computer: the site won't build while this is empty -->
+				{:else if dev}
+					<!-- Only ever seen on your own computer. A visitor sees nothing here until the
+					     project has its About written. -->
 					<p class="to-write">
 						Write this in your own words: fill in <code>about</code> for this project in
 						src/lib/tinkerings.js
@@ -464,10 +466,10 @@
 	h2 {
 		margin: 0;
 		font-family: var(--display);
-		font-size: 3rem;
+		font-size: var(--type-display);
 		font-weight: 600;
 		letter-spacing: var(--display-spacing);
-		line-height: 1.05;
+		line-height: 1.15;
 		color: var(--ink);
 		text-wrap: balance;
 	}
@@ -502,7 +504,7 @@
 		padding: 1rem 1.25rem;
 		border: 2px dashed var(--pink);
 		background: color-mix(in srgb, var(--pink) 8%, var(--bg));
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		line-height: 1.5;
 		color: var(--ink);
 	}
@@ -517,7 +519,7 @@
 	.about {
 		max-width: 60ch;
 		margin: 0;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		line-height: 1.65;
 		color: var(--ink);
 	}
@@ -572,7 +574,7 @@
 		padding-left: 1.2em;
 		display: grid;
 		gap: 0.6rem;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		line-height: 1.55;
 		color: var(--ink);
 	}

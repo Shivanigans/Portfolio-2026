@@ -50,9 +50,53 @@
 	font-display: swap;
 }
 
+
+/* Revisual Labs' own fonts, used only inside the Revisual booth case study
+   (/projects/revisual-booth). Sora for the sentences, Gambetta Italic for the phrases
+   it puts in italics. Nothing else on the site uses them, so they are only downloaded
+   when that page is opened. */
+@font-face {
+	font-family: 'Sora';
+	src: url('/fonts/sora-medium.ttf') format('truetype');
+	font-weight: 500;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Sora';
+	src: url('/fonts/sora-semibold.ttf') format('truetype');
+	font-weight: 600;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Gambetta';
+	src: url('/fonts/gambetta-italic.woff2') format('woff2');
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Gambetta';
+	src: url('/fonts/gambetta-medium-italic.woff2') format('woff2');
+	font-weight: 500;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Gambetta';
+	src: url('/fonts/gambetta-semibold-italic.woff2') format('woff2');
+	font-weight: 600;
+	font-style: italic;
+	font-display: swap;
+}
+
 :root {
-	--bg: #ffffff; /* paper: the sheet, the project panel */
-	--desk: #f6f6f6; /* the page round the sheet, and the Tinkerings canvas */
+	--bg: #ffffff; /* paper: the project panel, cards */
+	--desk: #f6f6f6; /* the page background, on every page */
+	--canvas: #fbfbfa; /* the Tinkering canvas: a shade lighter than the page, so it reads as a canvas */
 	--greige: #ece8e1; /* tabs, picture placeholders */
 	--text: #413c3c; /* all text, axis lines, label outlines. 10.9:1 on white, 10.0:1 on the desk */
 	--ink: var(--text); /* project descriptions */
@@ -84,26 +128,30 @@
 	--sticker-weight: 500;
 	--sticker-spacing: var(--display-spacing);
 
-	/* Text sizes, smallest to largest. Every small or body text uses one of these. */
+	/* Text sizes, smallest to largest, each named for its job. Every text on the site uses one. */
 	--type-meta: 0.75rem; /* 12px: captions, dates, card descriptions */
-	--type-label: 0.8125rem; /* 13px: notes, tags, the socials, small print */
+	--type-label: 0.8125rem; /* 13px: notes, tags, small print, the tabs */
 	--type-caption: 0.875rem; /* 14px: project names on cards, buttons */
-	--type-small: 0.9375rem; /* 15px: body text */
-	--type-body: 1rem; /* 16px: intros, larger body text */
+	--type-footer: 0.9375rem; /* 15px: the socials and live status line in the footer, and the slim footer bar */
+	--type-body: 1rem; /* 16px: body text, intros, the canvas labels */
+	--type-lead: 1.125rem; /* 18px: "✳ notes", post titles in the blog list */
 
 	/* Headings, smallest to largest */
 	--type-card: 1.375rem; /* 22px: card titles */
 	--type-section: 1.75rem; /* 28px: section headings */
-	--type-title: 4rem; /* 64px: page titles and the home hello */
+	--type-display: 3rem; /* 48px: the TL;DR line, the project panel title */
+	--type-title: 2.75rem; /* 44px: page titles and the home hello */
 
 	/* Older names the blog pages still use */
 	--accent: var(--text);
 	--marker: var(--pink);
 
-	/* The centred group: the margin column and the sheet beside it */
-	--side: 230px;
-	--sheet: 880px;
-	--sheet-top: 56px;
+	/* The page's margins. The top bar (logo, tabs, Resume) sits --edge in from the sides of the
+	   window; the content below sits in the centred reading column, --column wide.
+	   --bar-space is how much room the bar takes up: 40px above it plus the 120px logo. */
+	--edge: 96px;
+	--bar-space: 160px;
+	--rule: #8a8484; /* the line the tabs sit on, and the outline round the current tab */
 	--column: 41.5rem; /* the reading column */
 	--matrix-margin: clamp(0.75rem, 1.6vw, 1.75rem);
 	--page: 72rem;
@@ -118,7 +166,7 @@ body {
 	background: var(--desk);
 	color: var(--text);
 	font-family: var(--mono);
-	font-size: var(--type-small);
+	font-size: var(--type-body);
 	line-height: 1.6;
 	letter-spacing: var(--tracking);
 	/* Plain wrapping: each line fills up before the next starts. ("pretty" moved words down early
@@ -157,7 +205,7 @@ h1 {
 	margin: 0 0 1.5rem;
 	font-size: var(--type-title);
 	font-weight: 600;
-	line-height: 1.02;
+	line-height: 1.15; /* room between lines, so a g never touches the h under it */
 	text-wrap: balance;
 	text-box: trim-start cap alphabetic;
 }
@@ -169,17 +217,20 @@ h2 {
 	line-height: 1.15;
 }
 
-/* Smaller screens get smaller titles, so long ones still fit */
+/* Smaller screens get smaller titles and narrower margins, so long titles still fit and
+   nothing ever runs off the side of the window */
 @media (max-width: 64rem) {
 	:root {
-		--type-title: 3rem;
+		--type-title: 2.5rem;
+		--edge: 40px;
 	}
 }
 
 @media (max-width: 48rem) {
 	:root {
-		--type-title: 2.5rem;
+		--type-title: 2.25rem;
 		--type-section: 1.5rem;
+		--edge: 1rem;
 	}
 }
 
@@ -198,7 +249,7 @@ video {
 /* Small section labels */
 .label {
 	font-weight: 500;
-	font-size: var(--type-small);
+	font-size: var(--type-body);
 	margin: 3.5rem 0 1rem;
 }
 
@@ -232,19 +283,19 @@ video {
 	margin: 0 0.6em;
 }
 
-/* The outlined button: "View all projects", "Send email", "Explore the project".
-   Text-colour words in a deep pink frame, square corners. */
+/* The outlined button: "View all projects", "Explore the project". Text-colour words in a deep
+   pink frame with nothing behind them, so the page shows through. Square corners, 44px tall. */
 .pill-button {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.5em;
-	min-height: 40px;
-	padding: 0 1rem;
+	min-height: 44px;
+	padding: 0 1.125rem;
 	border: 1px solid var(--pink-deep);
-	background: var(--bg);
+	background: transparent;
 	font-family: var(--mono);
-	font-size: var(--type-label);
-	font-weight: 500;
+	font-size: var(--type-footer);
+	font-weight: 600;
 	color: var(--text);
 	text-decoration: none;
 	transition: background-color 0.15s ease;
@@ -254,6 +305,13 @@ video {
 .pill-button:hover {
 	color: var(--text);
 	background: var(--pink-soft);
+}
+
+/* The one filled button, "Send email": deep pink with the page grey for words (5.5:1) */
+.pill-button.filled,
+.pill-button.filled:hover {
+	background: var(--pink-deep);
+	color: var(--desk);
 }
 
 .pill-button:focus-visible {

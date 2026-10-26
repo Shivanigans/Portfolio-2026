@@ -1,5 +1,5 @@
 <script>
-	// The Tinkerings canvas: the 2x2 matrix of projects on a desk that fills the screen.
+	// The Tinkering canvas: the 2x2 matrix of projects on a desk that fills the screen.
 	// Drag anywhere to look around (or scroll with a trackpad), + and − to zoom. It opens
 	// slightly zoomed out, with the matrix in the free space beside the margin.
 	// Click a card (without dragging) and it grows into the project popup, which can step through
@@ -90,7 +90,9 @@
 		const zoom = clamp(Math.min(free.width / (WIDTH + 180), free.height / (HEIGHT + 60)) * 1.25, MIN_ZOOM, 1);
 		view = {
 			zoom,
-			x: free.left + free.width / 2 - (WIDTH / 2) * zoom,
+			// Centred, but never so far left that the "Hand-drawn" label (which sticks out about
+			// 100px past the matrix's left end) goes under the margin
+			x: Math.max(free.left + free.width / 2 - (WIDTH / 2) * zoom, free.left + 100 * zoom),
 			y: free.top + free.height / 2 - (HEIGHT / 2) * zoom
 		};
 	}
@@ -260,7 +262,7 @@
 
 			<section
 				class="matrix"
-				aria-label="Projects placed from hand-drawn to technical, and from build for work to build for fun"
+				aria-label="Projects placed from hand-drawn to technical, and from built for work to built for fun"
 			>
 				<!-- The two axes, their labels in boxes at the ends, and the oval where they cross.
 				     The labels on the plotted card's side turn dark. -->
@@ -304,7 +306,7 @@
 		</div>
 
 		<!-- Top right: a reminder that the canvas moves -->
-		<p class="chip" aria-hidden="true"><span class="mark">✥</span> Drag to explore</p>
+		<p class="chip" aria-hidden="true"><span class="mark">✥</span> Drag to wander</p>
 
 		<!-- Bottom right: zoom in and out -->
 		<div class="zoom" role="group" aria-label="Zoom">
@@ -400,7 +402,7 @@
 		width: 1px;
 	}
 
-	/* The labels: boxed at the ends of the axes, on the desk colour, grey until their side is plotted.
+	/* The labels: boxed at the ends of the axes, on the canvas colour, grey until their side is plotted.
 	   Sizes on the canvas are a little bigger than on the pages, because it opens zoomed out. */
 	.axis-label {
 		position: absolute;
@@ -410,7 +412,7 @@
 		gap: 0.4em;
 		padding: 0.4rem 0.8rem;
 		border: 1px solid var(--text);
-		background: var(--desk);
+		background: var(--canvas);
 		font-size: var(--type-body);
 		color: var(--muted);
 		white-space: nowrap;
@@ -464,7 +466,7 @@
 		padding: 0.7rem 1.5rem;
 		border: 1px solid var(--text);
 		border-radius: 50%;
-		background: var(--desk);
+		background: var(--canvas);
 		transform: translate(-50%, -50%);
 		font-size: var(--type-label);
 		line-height: 1.4;
@@ -589,7 +591,7 @@
 	.tick-label {
 		position: absolute;
 		padding: 0 0.3em;
-		background: var(--desk);
+		background: var(--canvas);
 		font-size: var(--type-label);
 		line-height: 1.4;
 		color: var(--pink-deep);
@@ -688,7 +690,7 @@
 		}
 
 		.name {
-			font-size: var(--type-small);
+			font-size: var(--type-body);
 		}
 	}
 

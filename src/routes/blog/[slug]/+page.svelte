@@ -1,6 +1,6 @@
 <script>
 	// A blog post: "← Blog · date · read time", the title in Paper Mono, then the post.
-	// Its footnotes, if it has any, sit in the margin (see src/lib/posts.js), and under the post on phones.
+	// Its footnotes, if it has any, sit at the end of the post (see src/lib/posts.js).
 	import Arrow from '$lib/components/Arrow.svelte';
 	import { formatDate } from '$lib/posts.js';
 	let { data } = $props();
@@ -28,13 +28,17 @@
 		<Content />
 	</div>
 
-	<!-- Phones have no margin, so the footnotes go under the post -->
+	<!-- The footnotes, at the end of the post. The ids match the little numbers in the text,
+	     so clicking one jumps down here. -->
 	{#if data.footnotes.length}
-		<ol class="phone-footnotes">
-			{#each data.footnotes as footnote, i}
-				<li><span class="number">{i + 1}</span> {footnote}</li>
-			{/each}
-		</ol>
+		<section class="footnotes" aria-labelledby="footnotes-heading">
+			<h2 id="footnotes-heading">Footnotes</h2>
+			<ol>
+				{#each data.footnotes as footnote, i}
+					<li id="footnote-{i + 1}"><span class="number">{i + 1}</span> {footnote}</li>
+				{/each}
+			</ol>
+		</section>
 	{/if}
 </article>
 
@@ -78,7 +82,7 @@
 	/* The text keeps to about 620px wide, so lines stay easy to read */
 	.body {
 		max-width: 620px;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		line-height: 1.7;
 	}
 
@@ -140,23 +144,30 @@
 		font-size: 0.95em;
 	}
 
-	.phone-footnotes {
-		display: none;
+	/* The footnotes: under the post, in the same column, behind a thin line */
+	.footnotes {
+		max-width: 620px;
+		margin-top: 3rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.footnotes h2 {
+		margin: 0 0 0.75rem;
+		font-size: var(--type-lead);
+		font-weight: 600;
+	}
+
+	.footnotes ol {
+		display: grid;
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: var(--type-label);
 	}
 
 	.number {
 		color: var(--pink-deep);
-	}
-
-	@media (max-width: 48rem) {
-		.phone-footnotes {
-			display: grid;
-			gap: 0.75rem;
-			margin: 3rem 0 0;
-			padding: 1.25rem 0 0;
-			border-top: 1px solid var(--line);
-			list-style: none;
-			font-size: var(--type-label);
-		}
 	}
 </style>

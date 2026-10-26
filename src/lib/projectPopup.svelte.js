@@ -1,6 +1,6 @@
-// The project popup's comings and goings, shared by the Tinkerings matrix, the home page
+// The project popup's comings and goings, shared by the Tinkering matrix, the home page
 // and the Projects page.
-// Each open project gets its own address, e.g. /tinkerings?project=walks-from-life, so a link
+// Each open project gets its own address, e.g. /tinkering?project=walks-from-life, so a link
 // to it opens the popup straight away, and the browser's back and forward buttons close
 // and reopen it.
 //

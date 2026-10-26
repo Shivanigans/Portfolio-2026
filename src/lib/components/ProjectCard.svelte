@@ -13,12 +13,13 @@
 	// boxed:    the Projects page look
 	// onopen:   called with the project when a popup project is clicked
 	// el:       the link itself, so focus can go back to it when the popup closes
+	// priority: the first card on the page, whose picture loads straight away
 	import Media from '$lib/components/Media.svelte';
 	import StickerSheet from '$lib/components/StickerSheet.svelte';
 	import Title from '$lib/components/Title.svelte';
 	import { behanceLink } from '$lib/links.js';
 
-	let { item, href = `?project=${item.id}`, boxed = false, onopen, el = $bindable() } = $props();
+	let { item, href = `?project=${item.id}`, boxed = false, onopen, el = $bindable(), priority = false } = $props();
 
 	const outside = $derived(!!item.behance);
 	const study = $derived(!outside && !!item.caseStudy);
@@ -54,7 +55,7 @@
 		{#if item.stickers?.length}
 			<StickerSheet stickers={item.stickers} />
 		{:else}
-			<Media src={item.thumb || item.media} alt="" calm />
+			<Media src={item.thumb || item.media} alt="" calm {priority} />
 		{/if}
 	</span>
 	<!-- One line: the name in SemiBold, then | and what kind of project it is -->
@@ -62,7 +63,9 @@
 		<span class="name"><Title text={item.title} /></span>{#if item.tags?.length}<span
 				class="sep"
 				aria-hidden="true">|</span
-			><span class="type">{item.tags.join(' · ')}</span>{/if}
+			><span class="type"
+				>{#each item.tags as tag, i}{#if i}{' · '}{/if}<span class="tag-word">{tag}</span>{/each}</span
+			>{/if}
 		{#if outside}<span class="visually-hidden"> (opens Behance in a new tab)</span>{/if}
 	</span>
 </a>
@@ -154,6 +157,11 @@
 
 	.type {
 		color: var(--muted);
+	}
+
+	/* A project type ("Data viz") never breaks across two lines; the line wraps between types */
+	.tag-word {
+		white-space: nowrap;
 	}
 
 	/* Projects page: a thin frame round the whole card. The picture fills the top, the words sit

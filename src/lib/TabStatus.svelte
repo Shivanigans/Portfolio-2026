@@ -99,7 +99,7 @@
     <p class="lines">
       <span class="line on">
         Shivani is <span class="word"><span class="dot" aria-hidden="true"></span>online</span>
-        and in company of {tabs} {tabs === 1 ? 'tab' : 'tabs'} right now
+        and in the company of {tabs} {tabs === 1 ? 'tab' : 'tabs'} right now
       </span>
       <span class="line off">
         Shivani is <span class="word"><span class="dot" aria-hidden="true"></span>away</span>
@@ -114,7 +114,7 @@
   .tab-status {
     padding: 64px 0 32px;
     font-family: var(--mono);
-    font-size: var(--type-small);
+    font-size: var(--type-footer);
     color: var(--text);
   }
 

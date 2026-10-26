@@ -1,5 +1,5 @@
 // Your projects. This is the only file you need to edit to update them.
-// The home page, the Projects page, the Tinkerings matrix and the project popup all read from here.
+// The home page, the Projects page, the Tinkering matrix and the project popup all read from here.
 //
 // To add or change a project:
 // 1. Put its images or videos in static/tinkerings
@@ -22,7 +22,7 @@
 //              plays the video, e.g. '/projects/sticker-press/sticker-press.jpg'
 // cover        optional main visual at the top of the popup (full width), if it should differ from media
 // images       optional pictures for the top of the popup, side by side in two columns,
-//              e.g. ['walks-from-life.png', '/blog/Walking_with_a_dog-front.webp'].
+//              e.g. ['walks-from-life.webp', '/blog/Walking_with_a_dog-front-1080.webp'].
 //              Without it, the popup shows the cover (or media) on its own, at full width.
 // description  a short summary, about 2 lines (not shown at the moment, kept from the old list page)
 // aboutHeading optional small heading above `about`, e.g. 'About'
@@ -82,24 +82,57 @@ export const intro =
 
 export const tinkerings = [
 	{
+		id: 'water-portfolio-map',
+		title: 'Water portfolio map',
+		note: 'UI/UX case study',
+		tags: ['Product & UX'],
+		description: 'More visual design work here.',
+		media: '/projects/water-portfolio-map/water-portfolio-map.webp', // its Behance cover
+		behance: 'https://www.behance.net/gallery/257250019/Water-Program-Portfolio-Interactive-Dashboard'
+	},
+	{
+		id: 'ceew-charts-and-viz',
+		title: 'CEEW charts and viz',
+		note: 'CEEW',
+		tags: ['Data viz'],
+		description: 'More visual design work here.',
+		media: '/projects/ceew-charts-and-viz/ceew-charts-and-viz.jpg',
+		behance: 'https://www.behance.net/gallery/254613877/Data-vis-CEEW'
+	},
+	{
+		id: 'revisual-booth',
+		title: 'Booth graphics and Merch Design',
+		note: 'Revisual Labs · VizChitra 2025',
+		tags: ['Illustration'],
+		media: '/projects/revisual-booth/thumbnail-rvl.png', // the five stickers in a row
+		description:
+			'Booth graphics and merch for Revisual Labs at VizChitra 2025: a printed stand, a sheet of dataviz-pun stickers and a hand-lettered mug.',
+		// Its own page, /projects/revisual-booth, built by hand from the Figma frames rather
+		// than from the shared case study template. own: true keeps it out of that template.
+		caseStudy: {
+			own: true,
+			intro: 'Print, play and a little bit of data for Revisual Labs’ booth at VizChitra 2025'
+		}
+	},
+	{
 		id: 'walks-from-life',
 		title: 'Walks from life',
 		tags: ['Creative coding', 'Data viz'],
 		x: 52,
 		y: 54,
 		width: 16,
-		media: '/blog/Walking_with_a_dog-front.webp',
+		media: '/blog/Walking_with_a_dog-front-1080.webp',
 		// Zoomed in on its card so the postcard's cream edges and caption strip don't show
 		thumbZoom: { scale: 1.24, origin: '50% 40%' },
-		cover: 'walks-from-life.png',
-		images: ['walks-from-life.png', '/blog/Walking_with_a_dog-front.webp'],
+		cover: 'walks-from-life.webp',
+		images: ['walks-from-life.webp', '/blog/Walking_with_a_dog-front-1080.webp'],
 		description:
-			'Walks from life was born out of noticing the shapes my walks take and how movement tells a story.The shapes are unique to each of the walks. (I’ve) started with data from 9 walks while looking beyond the step count',
+			'Walks from life was born out of noticing the shapes my walks take and how movement tells a story. The shapes are unique to each of the walks. I’ve started with data from 9 walks while looking beyond the step count.',
 	
 		about: 'Walks from life is a way to notice how movement tells a story. The shapes are unique to each of the walks. I’ve started with data from 9 walks while looking beyond a step count. The walks are from my life, and I’ve tried to capture the essence of each walk in a shape.',
 		gallery: [
-			{ src: '/blog/Walking_with_a_dog-front.webp', caption: 'Walking with a dog' },
-			{ src: '/blog/Dog_walked_me-front.webp', caption: 'Dog walked me' }
+			{ src: '/blog/Walking_with_a_dog-front-1080.webp', caption: 'Walking with a dog' },
+			{ src: '/blog/Dog_walked_me-front-1080.webp', caption: 'Dog walked me' }
 		],
 		link: 'https://walks-from-life.vercel.app',
 		// From the agreed mock (handover, 22 Oct 2026). The placeholder boxes wait for real pictures.
@@ -119,7 +152,7 @@ export const tinkerings = [
 				{
 					images: [
 						{
-							src: '/blog/Walking_with_a_dog-front.webp',
+							src: '/blog/Walking_with_a_dog-front-1080.webp',
 							alt: 'Postcard front: a walk drawn as a red line over a yellow map with little trees'
 						},
 						{ label: 'postcard back' }
@@ -140,8 +173,8 @@ export const tinkerings = [
 				{
 					heading: 'Output',
 					images: [
-						{ src: '/blog/Dog_walked_me-front.webp', alt: 'Postcard: Dog walked me' },
-						{ src: 'walks-from-life.png', alt: 'The walks from life gallery page' }
+						{ src: '/blog/Dog_walked_me-front-1080.webp', alt: 'Postcard: Dog walked me' },
+						{ src: 'walks-from-life.webp', alt: 'The walks from life gallery page' }
 					]
 				}
 			],
@@ -175,10 +208,10 @@ export const tinkerings = [
 		x: 14,
 		y: 57,
 		width: 16,
-		media: 'portrait-in-code.png',
+		media: 'portrait-in-code.webp',
 		description: 'From my p5.js portraits project, where I draw in code. A slow project, work in progress.',
 		about:
-			'I love drawing on paper, and I was introduced to drawing with code through [Schubert’s workshop at VizChitra](https://draw-with-data.netlify.app). While you can one-shot prompt most things now, it’s important for me to understand the foundations of how things are built.\n\nI started with p5.js, drawing my monogram through basic shapes. My biggest learning was understanding that this grid is not the same one introduced to us in maths class. In code, the starting point (0, 0) sits at the top-left corner, and the numbers grow as you go down, not up. This is a WIP, more on this as I continue to explore this.',
+			'I love drawing on paper, and I was introduced to drawing with code through [Schubert’s workshop at VizChitra](https://draw-with-data.netlify.app). While you can one-shot prompt most things now, it’s important for me to understand the foundations of how things are built.\n\nI started with p5.js, drawing my monogram through basic shapes. My biggest learning was understanding that this grid is not the same one introduced to us in maths class. In code, the starting point (0, 0) sits at the top-left corner, and the numbers grow as you go down, not up. This is a WIP. More on this as I continue to explore.',
 		link: ''
 	},
 	{
@@ -189,14 +222,14 @@ export const tinkerings = [
 		x: 80,
 		y: 74,
 		width: 16,
-		media: 'context-subtext.png',
+		media: 'context-subtext.webp',
 		description:
 			'Quote cards from my chats with my LLM, with a little dictionary of the filler words I use.',
 		about:
 			'My starting point was thinking about how type can convey tone with actual voice input. Then I saw the words taking shape while I talked, and saw the pauses. The fillers are raw material of their own.',
 		story: [
 			{
-				image: 'context-subtext.png',
+				image: 'context-subtext.webp',
 				alt: 'A quote set in type with small hamster memes placed between the words: The horrors persist but so do I.',
 				caption: 'My first try styled for reference, typeface is PP Mondwest by PangramPangram.'
 			},
@@ -204,11 +237,11 @@ export const tinkerings = [
 				text: 'So I did a small exercise with Claude where I assigned memes to my disfluencies (words like uh, umm, anddd) and to a few tones and slang I use, while pulling quotes from my conversations with it.'
 			},
 			{
-				image: 'context-subtext-vocab.jpg',
+				image: 'context-subtext-vocab.webp',
 				alt: 'A sheet of sixteen memes each with the word or tone it stands for, such as umm (thinks), HUH (confused) and I already said this.',
 				caption: 'The assigned personal vocabulary.'
 			},
-			{ text: 'Here are a few cherry-picked by me samples Claude produced, from both sides of the conversation.' },
+			{ text: 'Here are a few samples Claude produced, cherry-picked by me, from both sides of the conversation.' },
 			{ cards: true },
 			{ closing: 'How we talk to our LLMs is how we talk to the world but for now 100% of my vocabulary is reserved for humans.' }
 		],
@@ -311,7 +344,7 @@ export const tinkerings = [
 		x: 33,
 		y: 86,
 		width: 16,
-		media: '/projects/bouncy-friends/bouncy-friends.png', // the four in a row, kept still on the card
+		media: '/projects/bouncy-friends/bouncy-friends.webp', // the four in a row, kept still on the card
 		cover: '/projects/bouncy-friends/bouncy-friends-4x3.mp4', // the 14s clip, in the popup
 		aboutHeading: 'About',
 		about:
@@ -324,52 +357,34 @@ export const tinkerings = [
 		title: 'Chaos mode',
 		note: 'A hypnosis easter egg',
 		tags: ['UI experiments'],
-		// PLACEHOLDER spot on the matrix: move it by changing x and y
-		x: 93,
-		y: 97,
+		// Kept off the matrix: no x and y, so it only shows on the home page
 		width: 16,
 		media: '', // PLACEHOLDER: add its capture here
 		about: '',
 		link: ''
 	},
 	{
-		id: 'water-portfolio-map',
-		title: 'Water portfolio map',
-		note: 'UI/UX case study',
-		tags: ['Product & UX'],
-		media: '/projects/water-portfolio-map/water-portfolio-map.webp', // its Behance cover
-		behance: 'https://www.behance.net/gallery/257250019/Water-Program-Portfolio-Interactive-Dashboard'
-	},
-	{
-		id: 'ceew-charts-and-viz',
-		title: 'CEEW charts and viz',
-		note: 'CEEW',
-		tags: ['Data viz'],
-		media: '/projects/ceew-charts-and-viz/ceew-charts-and-viz.jpg',
-		behance: 'https://www.behance.net/gallery/254613877/Data-vis-CEEW'
-	},
-	{
 		id: 'stickers-for-ceew',
 		title: 'Stickers for CEEW',
 		note: 'CEEW',
 		tags: ['Illustration'],
-		media: '/projects/stickers-for-ceew/stickers-for-ceew.png', // the whole sheet, for the popup
+		media: '/projects/stickers-for-ceew/stickers-for-ceew.webp', // the whole sheet, for the popup
 		// The stickers on its card's frame, which can be peeled off and moved (StickerSheet.svelte).
 		// x, y: where the top left sits; w: how wide; all as a share of the frame. turn: degrees.
 		stickers: [
-			{ src: '/projects/stickers-for-ceew/dont-hate-mitigate.png', alt: 'Heart sticker: Don’t hate, mitigate', x: 3, y: 4, w: 28.5, turn: -6 },
-			{ src: '/projects/stickers-for-ceew/dont-be-fossil-minded.png', alt: 'Cloud sticker: Don’t be fossil-minded', x: 35, y: 6, w: 31, turn: 3 },
-			{ src: '/projects/stickers-for-ceew/powered-by-peer-review.png', alt: 'Sticky note sticker: Powered by peer review', x: 70, y: 4, w: 25.5, turn: 5 },
-			{ src: '/projects/stickers-for-ceew/solar-so-good.png', alt: 'Solar panel sticker: Solar, so good', x: 2, y: 52, w: 31, turn: 4 },
-			{ src: '/projects/stickers-for-ceew/water-you-waiting-for.png', alt: 'Hourglass sticker: Water you waiting for?', x: 33, y: 60, w: 37.5, turn: -3 },
-			{ src: '/projects/stickers-for-ceew/2-degrees-2-much.png', alt: 'Flame sticker: 2 degrees 2 much!', x: 71, y: 51, w: 27.5, turn: -5 }
+			{ src: '/projects/stickers-for-ceew/dont-hate-mitigate.webp', alt: 'Heart sticker: Don’t hate, mitigate', x: 3, y: 4, w: 28.5, turn: -6 },
+			{ src: '/projects/stickers-for-ceew/dont-be-fossil-minded.webp', alt: 'Cloud sticker: Don’t be fossil-minded', x: 35, y: 6, w: 31, turn: 3 },
+			{ src: '/projects/stickers-for-ceew/powered-by-peer-review.webp', alt: 'Sticky note sticker: Powered by peer review', x: 70, y: 4, w: 25.5, turn: 5 },
+			{ src: '/projects/stickers-for-ceew/solar-so-good.webp', alt: 'Solar panel sticker: Solar, so good', x: 2, y: 52, w: 31, turn: 4 },
+			{ src: '/projects/stickers-for-ceew/water-you-waiting-for.webp', alt: 'Hourglass sticker: Water you waiting for?', x: 33, y: 60, w: 37.5, turn: -3 },
+			{ src: '/projects/stickers-for-ceew/2-degrees-2-much.webp', alt: 'Flame sticker: 2 degrees 2 much!', x: 71, y: 51, w: 27.5, turn: -5 }
 		],
 		about: '', // in your own words, when you're ready
 		link: ''
 	}
 ];
 
-// Taken off the Tinkerings page for now, to come back to later.
+// Taken off the Tinkering page for now, to come back to later.
 // To put it back: move this block into the list above (before the closing ];)
 // and remove the // at the start of each line.
 //

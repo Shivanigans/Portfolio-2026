@@ -4,7 +4,7 @@
 	// with their chimes over a low hum, the spiral slows to a stop, and *snap*: the ending screen
 	// with the contact and resume buttons.
 	//
-	// It's only loaded when the page corner on Tinkerings is pressed (src/lib/components/ChaosCorner.svelte).
+	// It's only loaded when the page corner on Tinkering is pressed (src/lib/components/ChaosCorner.svelte).
 	// Its colours, fonts and styles stay inside this file and never touch the rest of the site.
 	//
 	// audio:   the browser's sound engine, switched on by that press (browsers only allow sound after a tap)

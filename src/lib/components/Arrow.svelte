@@ -13,6 +13,9 @@
 </script>
 
 <svg class="arrow" viewBox="0 0 12 12" aria-hidden="true"><path d={paths[dir]} /></svg>
+<!-- The out arrow tells sighted people that the link opens in a new tab. These words say the
+     same thing to a screen reader, which can’t see the arrow. -->
+{#if dir === 'out'}<span class="visually-hidden"> (opens in a new tab)</span>{/if}
 
 <style>
 	/* Sized by the text around it */

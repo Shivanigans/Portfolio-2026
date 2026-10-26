@@ -9,3 +9,8 @@ static/fonts/*
 !static/fonts/CormorantGaramond*.woff2
 !static/fonts/NationalPark*.woff2
 !static/fonts/PaperMono*.woff2
+
+# Local tooling: the impeccable design skill (with its Windows binary) and its review cache.
+# Both are installed per machine, not part of the site.
+.claude/skills/
+.impeccable/

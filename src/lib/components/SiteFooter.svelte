@@ -1,8 +1,8 @@
 <script>
 	// The foot of every page: your socials, then the live status line.
 	// variant: 'table'   the socials as a table, a few words about each (Home, Projects, case studies, About)
-	//          'compact' the socials on one line with pink stars between (Blog and posts)
-	//          'bar'     one slim row along the bottom of the Tinkerings canvas
+	//          'compact' the socials on one line with pink stars between (not used at the moment)
+	//          'bar'     one slim row: along the bottom of the Tinkering canvas, and at the foot of the blog
 	import Arrow from '$lib/components/Arrow.svelte';
 	import TabStatus from '$lib/TabStatus.svelte';
 	import { socials } from '$lib/links.js';
@@ -46,7 +46,7 @@
 	.footer {
 		margin-top: auto;
 		padding-top: 5rem;
-		font-size: var(--type-small);
+		font-size: var(--type-footer);
 	}
 
 	/* The socials table: name on the left, its few words in grey on the right, a line under each row.
@@ -113,17 +113,17 @@
 		padding: 1.5rem 0 2.5rem;
 	}
 
-	/* Tinkerings: everything on one slim, small row, on the desk colour, a line along its top,
-	   so it never competes with the canvas. Socials on the left, the status line on the right. */
+	/* Tinkering and the blog: everything on one slim row, on the desk colour, a line along its top.
+	   Socials on the left, the status line on the right. 15px text. */
 	.bar {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 0.25rem 2rem;
-		padding: 0.35rem 1.25rem;
+		gap: 0.3rem 2.5rem;
+		padding: calc(0.45rem + 2.5px) 1.5rem; /* 5px taller in all: 2.5px more above and below */
 		border-top: 1px solid var(--line);
 		background: var(--desk);
-		font-size: var(--type-meta);
+		font-size: var(--type-footer);
 	}
 
 	.bar .status {
@@ -131,17 +131,17 @@
 		border: 0;
 	}
 
-	/* The status line on one row: its drawing at half size, then the words beside it */
+	/* The status line on one row: its drawing a little over half size, then the words beside it */
 	.bar :global(footer.tab-status) {
 		display: flex;
 		align-items: center;
 		gap: 0.6rem;
 		padding: 0;
-		font-size: var(--type-meta);
+		font-size: var(--type-footer);
 	}
 
 	.bar :global(footer.tab-status .art) {
-		zoom: 0.5;
+		zoom: 0.6;
 	}
 
 	.bar :global(footer.tab-status .lines) {

@@ -113,7 +113,7 @@
 	.intro {
 		max-width: 46ch;
 		margin: 0;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 	}
 
 	/* Role, Type, Data, Status: between two lines, the label in grey */

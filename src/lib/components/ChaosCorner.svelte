@@ -1,11 +1,11 @@
 <script>
-	// The way into chaos mode, on the Tinkerings page: a reward for scrolling.
+	// The way into chaos mode, on the Tinkering page: a reward for scrolling.
 	// After about two scrolls, the bottom right corner of the page curls up, like a page about
 	// to be turned. Pointing at it (or tabbing to it) lifts it further and shows what's underneath.
 	// Pressing it starts chaos mode. Once the corner has appeared, it stays until you leave the page.
 	//
 	// Chaos mode itself (src/lib/ChaosMode.svelte) is only downloaded when the corner is pressed,
-	// so the Tinkerings page loads just as fast as without it.
+	// so the Tinkering page loads just as fast as without it.
 	import { onMount, tick } from 'svelte';
 	import { popup } from '$lib/popup.svelte.js';
 

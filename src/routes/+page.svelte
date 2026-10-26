@@ -1,18 +1,16 @@
 <script>
 	// Home: the hello, then the story of your work in sections (a heading and its project cards),
 	// the TL;DR line, and the way to reach you. The socials and the live status line come after,
-	// from the layout. As you scroll, the margin note changes to match the part of the story in view.
+	// from the layout. Each part of the story opens with its own small pink line.
 	// Each piece fades and slides up as it scrolls into view (use:reveal, src/lib/reveal.js).
 	// Click a card and its popup opens right here.
-	// The story's notes, headings and projects are in src/lib/home.js, the projects in
+	// The story's lines, headings and projects are in src/lib/home.js, the projects in
 	// src/lib/tinkerings.js, the email link in src/lib/links.js.
-	import { onMount } from 'svelte';
 	import Arrow from '$lib/components/Arrow.svelte';
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
 	import ProjectPanel from '$lib/components/ProjectPanel.svelte';
 	import StoryTooltip from '$lib/StoryTooltip.svelte';
 	import { emailLink } from '$lib/links.js';
-	import { live } from '$lib/notes.svelte.js';
 	import { ProjectPopup } from '$lib/projectPopup.svelte.js';
 	import { reveal } from '$lib/reveal.js';
 
@@ -33,33 +31,6 @@
 		projects.open(item);
 	}
 
-	// The margin note follows the story. Whichever part crosses a line about 40% of the way
-	// down the window sets the note; the hello and the ending put the page's own note back.
-	const watched = new Map();
-	let watcher;
-
-	function noteFor(node, note) {
-		watched.set(node, note);
-		watcher?.observe(node);
-		return { destroy: () => (watched.delete(node), watcher?.unobserve(node)) };
-	}
-
-	onMount(() => {
-		watcher = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) live.text = watched.get(entry.target);
-				}
-			},
-			{ rootMargin: '-40% 0px -59% 0px' }
-		);
-		watched.forEach((_, node) => watcher.observe(node));
-		return () => {
-			watcher.disconnect();
-			live.text = null;
-		};
-	});
-
 	// The back-to-top button shows once you've scrolled about 600px down
 	let scrollY = $state(0);
 	const showTop = $derived(scrollY > 600);
@@ -78,16 +49,18 @@
 
 <!-- While the popup is open, the page behind can't be clicked or tabbed into -->
 <div class="home" inert={!!projects.current}>
-	<section class="hello" use:noteFor={null}>
+	<section class="hello">
 		<!-- The space before the dash doesn't break, so no line starts with it -->
 		<h1>Hi, I’m Shivani&nbsp;- a designer, maker and chief LLM operator.</h1>
-		<p>I’m in the process of moving in this place. Curating it project by project and word by word.</p>
+		<p>I’m in the process of moving into this place. Curating it project by project and word by word.</p>
 	</section>
 
 	{#each data.parts as part}
-		<div class="part" use:noteFor={[part.note]}>
-			{#each part.sections as section (section.slug)}
+		<div class="part">
+			{#each part.sections as section, i (section.slug)}
 				<section class="topic" aria-labelledby="topic-{section.slug}">
+					<!-- The part's own line, once, just above its first heading -->
+					{#if i === 0}<p class="story-line" use:reveal>{part.note}</p>{/if}
 					<h2 id="topic-{section.slug}" use:reveal>{section.heading}</h2>
 
 					<ul class="grid">
@@ -95,6 +68,7 @@
 							<li use:reveal={0.1}>
 								<ProjectCard
 									{item}
+									priority={section === data.parts[0].sections[0] && item === section.items[0]}
 									bind:el={cards[`${section.slug}:${item.id}`]}
 									onopen={(t) => openFrom(section, t)}
 								/>
@@ -106,7 +80,7 @@
 		</div>
 	{/each}
 
-	<section class="closing" use:noteFor={null} use:reveal>
+	<section class="closing" use:reveal>
 		<!-- "multitudes" tells a little story on desktops: point at it, then keep pointing
 		     (src/lib/StoryTooltip.svelte). On phones and tablets it's just the word. -->
 		<h2 class="tldr" id="multitudes">
@@ -114,12 +88,12 @@
 				><StoryTooltip word="multitudes" steps={['fortitude,', 'gratitude,', 'attitude', 'and vicissitude.']} /></span
 			><span class="story-plain">multitudes</span>.
 		</h2>
-		<p>I’m open to work full-time and freelance roles, get in touch I would to collaborate!</p>
+		<p>I’m open to full-time and freelance work. Get in touch if you’d like to collaborate!</p>
 
 		<div class="actions">
 			<a class="pill-button" href="/projects">View all projects</a>
 			<!-- Opens a new email to you, in a new tab -->
-			<a class="pill-button" href={emailLink} target="_blank" rel="noopener">Send email <Arrow dir="out" /></a>
+			<a class="pill-button filled" href={emailLink} target="_blank" rel="noopener">Send email <Arrow dir="out" /></a>
 		</div>
 	</section>
 </div>
@@ -155,10 +129,11 @@
 	.hello p {
 		max-width: none;
 		margin: 0;
-		font-size: var(--type-label);
+		font-size: var(--type-body);
 	}
 
-	/* The story: 64px between sections, more before the first */
+	/* The story: 64px between the sections of one chapter ("Currently, I'm" and so on), and
+	   112px between chapters, so each reads as its own group. More before the first. */
 	.part:first-of-type {
 		margin-top: 4rem;
 	}
@@ -167,15 +142,27 @@
 		margin-top: 4rem;
 	}
 
+	.part + .part > .topic:first-child {
+		margin-top: 7rem;
+	}
+
 	h2 {
 		margin-bottom: 1rem;
 		text-wrap: balance;
 	}
 
-	/* Home thumbnails are 480px wide */
+	/* The line that opens each part of the story ("Currently, I'm"): small, deep pink,
+	   Paper Mono, sitting just above the first heading of that part */
+	.story-line {
+		margin: 0 0 0.5rem;
+		font-size: var(--type-label);
+		color: var(--pink-deep);
+	}
+
+	/* Two cards to a row, sharing the column between them */
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(0, 480px));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1.5rem 1.25rem;
 		margin: 0;
 		padding: 0;
@@ -189,8 +176,8 @@
 
 	.tldr {
 		margin-bottom: 1.25rem;
-		font-size: 3rem;
-		line-height: 1.1;
+		font-size: var(--type-display);
+		line-height: 1.15;
 	}
 
 	/* "multitudes" is in the deep pink (the pink for text, 6.0:1 on white), on phones too */
@@ -215,7 +202,7 @@
 
 	.closing p {
 		margin: 0;
-		font-size: var(--type-label);
+		font-size: var(--type-body);
 	}
 
 	.actions {
@@ -278,11 +265,11 @@
 		outline-offset: 3px;
 	}
 
-	/* Phones: cards fill the width, two to a row */
+	/* Phones: one card to a row, the full width, so a picture is big enough to see */
 	@media (max-width: 48rem) {
 		.grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 1.5rem 1rem;
+			grid-template-columns: minmax(0, 1fr);
+			gap: 2rem;
 		}
 
 		.tldr {

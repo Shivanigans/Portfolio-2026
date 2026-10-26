@@ -1,19 +1,24 @@
 <script>
-	// Projects: every project as a boxed card, with a row of filters, one per tag.
+	// Projects: every project as a row — its name, description and tags on the left, its picture
+	// on the right — with a row of filters above, one per tag.
 	// /projects?tag=data-viz opens with that filter already chosen.
-	// A card opens its case study, its Behance page, or its popup right here (see ProjectCard).
+	// A row opens its case study, its Behance page, or its popup right here (see ProjectRow).
 	// The projects and tags come from src/lib/tinkerings.js.
 	import { onMount } from 'svelte';
 	import { replaceState } from '$app/navigation';
-	import ProjectCard from '$lib/components/ProjectCard.svelte';
+	import ProjectRow from '$lib/components/ProjectRow.svelte';
 	import ProjectPanel from '$lib/components/ProjectPanel.svelte';
 	import { tagSlug } from '$lib/tinkerings.js';
 	import { ProjectPopup } from '$lib/projectPopup.svelte.js';
 
 	let { data } = $props();
 
+	// Projects kept off this page. They still show on Home and the Tinkering matrix.
+	const hidden = ['context-subtext', 'portrait-in-p5js', 'stickers-for-ceew', 'chaos-mode'];
+	const listed = data.tinkerings.filter((t) => !hidden.includes(t.id));
+
 	let chosen = $state(null); // the tag being shown, or null for all
-	const shown = $derived(chosen ? data.tinkerings.filter((t) => t.tags?.includes(chosen)) : data.tinkerings);
+	const shown = $derived(chosen ? listed.filter((t) => t.tags?.includes(chosen)) : listed);
 
 	// The filter in the address, read once the page is open
 	onMount(() => {
@@ -31,9 +36,14 @@
 		replaceState(location.pathname + (query ? `?${query}` : ''), {});
 	}
 
-	// Each card's link, by id, so focus can go back to it when its popup closes
-	const cards = {};
-	const projects = new ProjectPopup(() => data.tinkerings, (id) => cards[id]);
+	// Each row and each name link, by id: the popup grows out of the row's picture, and focus
+	// goes back to the name when it closes
+	const rows = {};
+	const names = {};
+	const projects = new ProjectPopup(
+		() => listed,
+		(id) => names[id]
+	);
 </script>
 
 <svelte:head>
@@ -59,10 +69,17 @@
 		{shown.length === 1 ? 'project' : 'projects'}{#if chosen}&nbsp;in {chosen}{/if}
 	</p>
 
-	<ul class="grid">
-		{#each shown as item (item.id)}
+	<ul class="rows">
+		{#each shown as item, i (item.id)}
 			<li>
-				<ProjectCard {item} boxed href="/projects?project={item.id}" bind:el={cards[item.id]} onopen={projects.open} />
+				<ProjectRow
+					{item}
+					priority={i === 0}
+					bind:el={rows[item.id]}
+					bind:nameEl={names[item.id]}
+					onopen={projects.open}
+					onfilter={choose}
+				/>
 			</li>
 		{/each}
 	</ul>
@@ -72,7 +89,7 @@
 	<ProjectPanel
 		bind:this={projects.panel}
 		project={projects.current}
-		origin={projects.thumbOf}
+		origin={(id) => rows[id]?.querySelector('.thumb')}
 		top={56}
 		onclosed={projects.closed}
 	/>
@@ -90,14 +107,15 @@
 		gap: 0.5rem;
 	}
 
-	/* Not chosen: white with a deep pink outline */
+	/* Not chosen: nothing behind it, so the page shows through, in a deep pink outline */
 	.filter {
-		min-height: 32px;
-		padding: 0 0.75rem;
+		min-height: 38px;
+		padding: 0 0.9375rem;
 		border: 1px solid var(--pink-deep);
-		background: var(--bg);
+		background: transparent;
 		font: inherit;
-		font-size: var(--type-meta);
+		font-size: var(--type-footer);
+		font-weight: 500;
 		color: var(--text);
 		cursor: pointer;
 		transition: background-color 0.15s ease;
@@ -107,11 +125,10 @@
 		background: var(--pink-soft);
 	}
 
-	/* Chosen: bright pink, dark words */
+	/* Chosen: filled deep pink, with the page grey for words (5.5:1) */
 	.filter[aria-pressed='true'] {
-		border-color: var(--pink);
-		background: var(--pink);
-		color: var(--on-pink);
+		background: var(--pink-deep);
+		color: var(--desk);
 	}
 
 	.filter:focus-visible {
@@ -119,20 +136,15 @@
 		outline-offset: 3px;
 	}
 
-	/* Two cards side by side, one under another on phones */
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-		margin: 2.25rem 0 0;
+	/* One project to a row: 64px below the filters, so they read as separate from the work,
+	   then 48px between one project and the next */
+	.rows {
+		display: flex;
+		flex-direction: column;
+		gap: 48px;
+		margin: 64px 0 0;
 		padding: 0;
 		list-style: none;
-	}
-
-	@media (max-width: 40rem) {
-		.grid {
-			grid-template-columns: minmax(0, 1fr);
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

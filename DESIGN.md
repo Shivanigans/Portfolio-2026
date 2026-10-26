@@ -8,6 +8,7 @@ colors:
   text: "#413c3c"
   muted: "color-mix(text 75%, paper)"
   line: "color-mix(text 16%, transparent)"
+  rule: "#8a8484"
   sun: "#f9e278"
   brand-pink: "#e963a8"
   pink-deep: "#b8236f"
@@ -34,7 +35,7 @@ colors:
 typography:
   title:
     fontFamily: "National Park, system-ui, sans-serif"
-    fontSize: "4rem"
+    fontSize: "2.75rem"
     fontWeight: 600
     lineHeight: 1.02
     letterSpacing: "-0.02em"
@@ -83,9 +84,9 @@ typography:
     fontWeight: 400
     lineHeight: 1.55
   tab:
-    fontFamily: "National Park, system-ui, sans-serif"
-    fontSize: "0.8125rem"
-    fontWeight: 500
+    fontFamily: "Paper Mono, ui-monospace, monospace"
+    fontSize: "0.9375rem"
+    fontWeight: 600
     letterSpacing: "-0.02em"
     textTransform: "uppercase"
   meta:
@@ -111,6 +112,18 @@ typography:
     fontFamily: "Honey, Georgia, serif"
     fontSize: "1.75rem"
     fontWeight: 400
+  # Revisual Labs' own brand type, used only inside /projects/revisual-booth so that case
+  # study matches the client's design. Nothing else on the site may use these two.
+  revisual-sans:
+    fontFamily: "Sora, system-ui, sans-serif"
+    fontWeight: 500
+    letterSpacing: "-0.02em"
+    scope: "/projects/revisual-booth"
+  revisual-serif:
+    fontFamily: "Gambetta, Georgia, serif"
+    fontWeight: 500
+    fontStyle: "italic"
+    scope: "/projects/revisual-booth"
 rounded:
   none: "0"
   tooltip-pointer: "1px"
@@ -118,39 +131,42 @@ rounded:
   chip: "6px"
   pill: "999px"
 spacing:
-  sheet-top: "56px"
+  bar-top: "40px"
+  bar-space: "160px"
+  edge: "96px"
+  column: "41.5rem"
   sheet-padding-top: "72px"
-  sheet-padding-side: "80px"
-  side: "230px"
-  sheet: "880px"
-  logo: "200px"
-  logo-to-tabs: "56px"
-  tabs-to-notes: "64px"
+  logo: "120px"
 components:
   tab:
-    backgroundColor: "{colors.greige}"
+    backgroundColor: "transparent"
     textColor: "{colors.text}"
     typography: "{typography.tab}"
-    width: "140px"
-    height: "34px"
+    padding: "7px 14px"
+    borderBottom: "1px solid {colors.rule}"
   tab-current:
-    backgroundColor: "{colors.brand-pink}"
-    textColor: "{colors.on-pink}"
-    width: "162px"
+    backgroundColor: "{colors.greige}"
+    textColor: "{colors.pink-deep}"
+    border: "1px solid {colors.rule} (top and sides only)"
   filter:
-    backgroundColor: "{colors.paper}"
+    backgroundColor: "transparent"
     textColor: "{colors.text}"
-    typography: "{typography.meta}"
+    typography: "{typography.tab}"
+    fontWeight: 500
     rounded: "{rounded.none}"
+    height: "38px"
   filter-chosen:
-    backgroundColor: "{colors.brand-pink}"
-    textColor: "{colors.on-pink}"
+    backgroundColor: "{colors.pink-deep}"
+    textColor: "{colors.desk}"
   pill-button:
-    backgroundColor: "{colors.paper}"
+    backgroundColor: "transparent"
     textColor: "{colors.text}"
-    typography: "{typography.label}"
+    typography: "{typography.tab}"
     rounded: "{rounded.none}"
-    height: "40px"
+    height: "44px"
+  pill-button-filled:
+    backgroundColor: "{colors.pink-deep}"
+    textColor: "{colors.desk}"
   project-card-boxed:
     backgroundColor: "{colors.paper}"
     rounded: "{rounded.none}"
@@ -176,19 +192,19 @@ Two voices share the type. National Park, a friendly grotesque, names things: ti
 
 Colour is quiet: warm charcoal text, a greige for tabs and placeholders, the sticker's yellow for "you are here", and pink in two strengths: deep pink for anything that has to be read, brand pink only for decoration.
 
-Tinkerings breaks the sheet: its canvas fills the whole screen, and the margin floats on top of it.
+Tinkering breaks the sheet: its canvas fills the whole screen, and the margin floats on top of it.
 
 ## Colors
 
 - **Paper** (`--bg`, `--card`): the sheet, project panels, boxed cards, the canvas card pictures and labels.
-- **Desk** (`--desk`): the page round the sheet and the Tinkerings canvas.
+- **Desk** (`--desk`): the page round the sheet and the Tinkering canvas.
 - **Greige** (`--greige`): tabs, picture placeholders.
 - **Text** (`--text`, `--ink`): all text, axis lines, the oval and label outlines. 10.9:1 on paper, 10.0:1 on desk, 8.9:1 on greige, 8.4:1 on sun.
 - **Muted** (`--muted`): text at 75% into paper, 5.1:1. Captions, dates, tags, card descriptions, the socials' descriptions. Never lighter than this (60 to 65% fails at 3.4 to 3.9:1).
 - **Line** (`--line`): text at 16%. Dividers, card outlines, the footer line.
 - **Sun** (`--sun`): the away highlight in the status line, the highlight behind blog quotes, and the logo. Never text (1.4:1); text-colour words on it reach 8.3:1.
 - **On pink** (`--on-pink`): words on brand pink (the current tab, the chosen filter), 5.4:1.
-- **Brand pink** (`--pink`): decoration only: square markers, the stars between socials, hover outlines on cards, the plotting lines on Tinkerings, the dotted line under "multitudes". Never text and never behind text (3.1:1).
+- **Brand pink** (`--pink`): decoration only: square markers, the stars between socials, hover outlines on cards, the plotting lines on Tinkering, the dotted line under "multitudes". Never text and never behind text (3.1:1).
 - **Deep pink** (`--pink-deep`): pink that can be read, 6.0:1 on paper: the notes heading, back links, button and filter borders, footnote numbers, link hover, the story tooltip fill (white on deep pink, 6.0:1).
 - **Pink soft** (`--pink-soft`): the hover fill on buttons, filters and the panel controls.
 - **Status green** (`--status-green`): the status line's tally marks, grass tuft and online dot. **Status online background** (`--status-online-bg`, status green mixed 40% into paper): the rectangular highlight behind "online"; "away" uses sun with a text-colour dot.
@@ -213,7 +229,7 @@ Tinkerings breaks the sheet: its canvas fills the whole screen, and the margin f
 - **Sheet:** its top right corner is folded down 44px, like a dog-eared page: the corner shows the desk, the flap is the faintly grey back of the paper with a soft shadow. 56px from the top, 72px padding on top and 80px at the sides (less on narrow windows), at least a screen tall, with the footer pushed to the bottom on short pages.
 - **Margin, top to bottom:** the 200px logo, 56px, the tabs, 64px, the note. Sticky while the sheet scrolls.
 - **Phones** (under 48rem, not designed yet): the margin becomes a band with a 72px logo and a menu button; the tabs drop down full width; the note is left out (a post's footnotes go under it instead).
-- **Tinkerings:** the canvas fills the screen in the desk colour; the margin floats in the same spot on a soft desk-coloured patch; the footer is a slim bar along the bottom.
+- **Tinkering:** the canvas fills the screen in the desk colour; the margin floats in the same spot on a soft desk-coloured patch; the footer is a slim bar along the bottom.
 
 ## Components
 
@@ -224,7 +240,7 @@ HOME, PROJECTS, TINKERINGS, BLOG, ABOUT, RESUME ↗, in National Park Medium cap
 "✳ notes" in National Park, deep pink, then the page's note in Paper Mono 13px. A paragraph starting with a symbol (↘, ✥) shows the symbol in deep pink. Each page sets its note in its `+page.js`; Home changes its note as the story scrolls past (fading between them). A blog post with footnotes shows "✳ footnotes" instead, numbered in deep pink.
 
 ### Footer
-Every page: the socials, then the live status line without a divider above it. Home, Projects, case studies and About have the socials table (name ↗ and a few words, a line under each row, the lines running the full width of the sheet); the blog has them on one line with brand pink ✳ between; Tinkerings has everything on one slim row with a line along its top.
+Every page: the socials, then the live status line without a divider above it. Home, Projects, case studies and About have the socials table (name ↗ and a few words, a line under each row, the lines running the full width of the sheet); the blog has them on one line with brand pink ✳ between; Tinkering has everything on one slim row with a line along its top.
 
 ### Project cards
 4:3 pictures with square corners, on greige until the picture loads. On Home: just the picture, "**Name** | project type" on one line at 14px, the name in Paper Mono SemiBold, the type muted. Home thumbnails are 480px wide; pointing at it draws a 2px brand pink outline round the picture. On Projects: boxed in a 1px line, the title in National Park 22px and the tags (muted, separated by middle dots) under it; the frame turns brand pink on hover. A card opens its case study, its Behance page, or the project popup.
@@ -236,9 +252,9 @@ Square corners, text-colour words, a 1px deep pink border, soft pink on hover. A
 "← Projects" in deep pink, the title, one line of intro, the details (Role, Type, Data, Status) between two lines, then the parts: headings, text held to 52ch, and pictures always in pairs, side by side, never one across the full width. Links at the end, then "Next project →" over a text-colour line.
 
 ### Project popup
-A white sheet up to 860px wide, square corners, from 56px down to the bottom of the screen, over the page faded to the desk colour and blurred. It grows out of the card and shrinks back into it. Top right: 40px square controls outlined in the text colour: ← and → on Tinkerings (also the arrow keys), and ×. A "2 / 8" counter sits above the title on Tinkerings. Pictures first, then the title in National Park, tags, and the text.
+A white sheet up to 860px wide, square corners, from 56px down to the bottom of the screen, over the page faded to the desk colour and blurred. It grows out of the card and shrinks back into it. Top right: 40px square controls outlined in the text colour: ← and → on Tinkering (also the arrow keys), and ×. A "2 / 8" counter sits above the title on Tinkering. Pictures first, then the title in National Park, tags, and the text.
 
-### Tinkerings canvas
+### Tinkering canvas
 A 1300 by 940 matrix on a grid of faint plus signs. Thin text-colour axes; labels boxed at their ends (Build for work, Build for fun, Hand-drawn, Technical); "The intersection of art and technology" in an oval where they cross. Cards are 230px: the picture on white, the name in a white box under it, a brand pink outline on hover. Pointing at a card still plots it: the others fade, brand pink lines run to both axes, and its side's labels darken. Drag anywhere (or scroll) to move; + and − zoom (Ctrl + scroll or a pinch too). It opens zoomed to fit the free space beside the margin. "✥ Drag to explore" sits top right. Phones get a plain list.
 
 ### Live status line

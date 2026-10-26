@@ -38,7 +38,7 @@ export const story = [
 		]
 	},
 	{
-		note: 'Previously, I turned',
+		note: 'Previously, I helped',
 		sections: [
 			{
 				tag: 'Data viz',

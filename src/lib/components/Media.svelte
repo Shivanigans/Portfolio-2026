@@ -4,9 +4,10 @@
 	// With no src it shows an empty box that says "wow so empty".
 	// calm: for people who have asked their device for less motion, the video stays
 	// still on its first frame instead of playing
+	// priority: the picture is the first big thing on screen, so it loads straight away, first
 	import { onMount } from 'svelte';
 
-	let { src = '', alt = '', calm = false } = $props();
+	let { src = '', alt = '', calm = false, priority = false } = $props();
 
 	const url = $derived(src.startsWith('/') ? src : `/tinkerings/${encodeURIComponent(src)}`);
 	const isVideo = $derived(/\.(mp4|webm)$/i.test(src));
@@ -24,9 +25,9 @@
 {#if !src}
 	<div class="placeholder"><span>wow so empty</span></div>
 {:else if isVideo}
-	<video bind:this={video} src={url} autoplay muted loop playsinline aria-label={alt}></video>
+	<video bind:this={video} src={url} autoplay muted loop playsinline aria-label={alt || undefined}></video>
 {:else}
-	<img src={url} {alt} loading="lazy" />
+	<img src={url} {alt} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />
 {/if}
 
 <style>

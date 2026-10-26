@@ -5,7 +5,8 @@
 export const drawing = '/about/evolution-stack.gif';
 export const drawingAlt = 'Shivani’s self-portrait, redrawn over the years';
 
-// The work-in-progress pictures that float under the intro, three of them.
+// The work-in-progress pictures that used to float under the intro. Hidden from About for now;
+// to bring them back, restore the list in src/routes/about/+page.svelte.
 // Each { src: '/about/wip-1.jpg', alt: '...' }. Leave src '' for a placeholder box.
 export const wip = [
 	{ src: '', alt: '' },
@@ -14,7 +15,7 @@ export const wip = [
 ];
 
 // "It takes a village": people who shaped how you work. Hidden from About for now; to bring it
-// back, restore the section in src/routes/about/+page.svelte., each { name: '...', href: 'https://...' }.
+// back, restore the section in src/routes/about/+page.svelte, each { name: '...', href: 'https://...' }.
 // PLACEHOLDER: swap in the real names and links.
 export const inspirations = [
 	{ name: 'Inspiration name', href: '' },

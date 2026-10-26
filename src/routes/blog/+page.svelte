@@ -8,7 +8,7 @@
 </svelte:head>
 
 <h1>Blog</h1>
-<p class="intro">Notes on things I'm making, updated once a month.</p>
+<p class="intro">Notes on things I’m making, updated once a month.</p>
 
 {#if data.posts.length}
 	<ul class="post-list">
@@ -37,7 +37,7 @@
 
 	.intro {
 		margin: 0;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 	}
 
 	/* Posts start 32px below the intro, a line above the list and between posts */
@@ -75,7 +75,7 @@
 	}
 
 	.title {
-		font-size: 1.125rem;
+		font-size: var(--type-lead);
 		font-weight: 500;
 		letter-spacing: var(--display-spacing);
 	}

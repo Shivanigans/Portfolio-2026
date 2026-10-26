@@ -105,6 +105,12 @@
 	}
 </script>
 
+<!-- Bellefair, for the quotes, from Google Fonts: only loaded on pages that show the quote cards -->
+<svelte:head>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet" />
+</svelte:head>
+
 <div class="wrap">
 	<p class="count" aria-live="polite">{order[0] + 1} / {quotes.length}</p>
 
@@ -239,7 +245,7 @@
 	.who {
 		margin: 0;
 		font-family: 'Bellefair', Georgia, serif;
-		font-size: var(--type-small);
+		font-size: var(--type-body);
 		color: #5a5a55;
 	}
 
