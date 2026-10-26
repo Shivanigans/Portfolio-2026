@@ -86,7 +86,6 @@ export const tinkerings = [
 		title: 'Water portfolio map',
 		note: 'UI/UX case study',
 		tags: ['Product & UX'],
-		description: 'More visual design work here.',
 		media: '/projects/water-portfolio-map/water-portfolio-map.webp', // its Behance cover
 		behance: 'https://www.behance.net/gallery/257250019/Water-Program-Portfolio-Interactive-Dashboard'
 	},
@@ -95,7 +94,6 @@ export const tinkerings = [
 		title: 'CEEW charts and viz',
 		note: 'CEEW',
 		tags: ['Data viz'],
-		description: 'More visual design work here.',
 		media: '/projects/ceew-charts-and-viz/ceew-charts-and-viz.jpg',
 		behance: 'https://www.behance.net/gallery/254613877/Data-vis-CEEW'
 	},

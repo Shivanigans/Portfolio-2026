@@ -8,7 +8,7 @@ export const emailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=singhshi
 
 // The socials at the foot of every page: the name, and a few words about what's there
 export const socials = [
-	{ label: 'Behance', href: behanceLink, about: 'old portfolio' },
+	{ label: 'Behance', href: behanceLink, about: 'more visual design work here' },
 	{ label: 'Instagram', href: instagramLink, about: 'comics, illustrations and stuff' },
 	{ label: 'LinkedIn', href: linkedinLink, about: 'being a member of society' }
 ];
