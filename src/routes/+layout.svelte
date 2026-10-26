@@ -21,7 +21,7 @@
 	const links = [
 		{ href: '/', label: 'Home' },
 		{ href: '/projects', label: 'Projects' },
-		{ href: '/tinkerings', label: 'Tinkerings' },
+		{ href: '/tinkerings', label: 'Tinkering' },
 		{ href: '/blog', label: 'Blog' },
 		{ href: '/about', label: 'About' }
 	];
@@ -38,8 +38,8 @@
 	// Tinkerings is a canvas that fills the screen, with no sheet
 	const canvas = $derived(!page.error && page.url.pathname === '/tinkerings');
 
-	// The blog keeps its socials on one line; every other page has the socials table
-	const footer = $derived(page.url.pathname.startsWith('/blog') ? 'compact' : 'table');
+	// The blog has the same slim bar as Tinkerings; every other page has the socials table
+	const footer = $derived(page.url.pathname.startsWith('/blog') ? 'bar' : 'table');
 
 	// The margin note: the page's own (from its +page.js), unless the page has swapped it.
 	// A blog post with footnotes shows those instead.
@@ -67,11 +67,6 @@
 </script>
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && (menuOpen = false)} />
-
-<!-- The yellow star (static/favicon.png) as the browser tab icon -->
-<svelte:head>
-	<link rel="icon" type="image/png" href="/favicon.png" />
-</svelte:head>
 
 <div class="group" class:canvas>
 	<!-- While a project popup is open, the margin can't be clicked or tabbed into -->
@@ -186,12 +181,19 @@
 			<SiteFooter variant="bar" />
 		</div>
 	{:else}
-		<main class="sheet">
+		<main class="sheet" class:barred={footer === 'bar'}>
 			{@render children()}
-			<SiteFooter variant={footer} />
+			{#if footer !== 'bar'}
+				<SiteFooter variant={footer} />
+			{/if}
 		</main>
 	{/if}
 </div>
+
+<!-- The blog: the same slim bar as Tinkering, across the whole window under the page -->
+{#if !canvas && footer === 'bar'}
+	<div class="page-bar"><SiteFooter variant="bar" /></div>
+{/if}
 
 <style>
 	/* The margin (230px) and the sheet (880px). The sheet sits in the middle of the window, with
@@ -279,8 +281,8 @@
 		}
 	}
 
-	/* The tabs: 56px under the logo (less on short windows), lined up on the right so they tuck
-	   against the sheet. Each is 140px wide; the current one slides out to 162px. */
+	/* The tabs: 56px under the logo (less on short windows), lined up on the right of their
+	   column. Each is 140px wide; the current one slides out to 162px. */
 	nav {
 		display: flex;
 		flex-direction: column;
@@ -337,7 +339,7 @@
 
 	.notes h2 {
 		margin: 0 0 0.6rem;
-		font-size: 1.125rem;
+		font-size: var(--type-lead);
 		font-weight: 600;
 		color: var(--pink-deep);
 	}
@@ -396,43 +398,24 @@
 		background: var(--pink);
 	}
 
-	/* The sheet: white, at least a screen tall, 72px of room at the top and 80px at the sides.
-	   No edge or shadow at the bottom: it just carries on. The footer sits at the bottom on short pages. */
+	/* The page's content column (still called the sheet): no paper of its own any more, the
+	   content sits straight on the page background. At least a screen tall, 72px of room at the
+	   top and 80px at the sides. The footer sits at the bottom on short pages. */
 	.sheet {
-		--fold: 44px;
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		min-width: 0;
 		min-height: calc(100dvh - var(--sheet-top));
 		padding: 72px clamp(1.5rem, 6vw, 80px) 0;
-		background: var(--bg);
 	}
 
-	/* The sheet's top right corner is folded down, like a page dog-eared: the corner itself shows
-	   the desk, and the folded flap is the back of the paper, faintly grey, with a soft shadow.
-	   Drawn on top of the sheet rather than cut out of it, so nothing inside the sheet gets clipped. */
-	.sheet::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: var(--fold);
-		height: var(--fold);
-		background: linear-gradient(
-			to bottom left,
-			var(--desk) 50%,
-			color-mix(in srgb, var(--text) 9%, var(--bg)) 50%
-		);
-		filter: drop-shadow(-2px 2px 2px color-mix(in srgb, var(--text) 14%, transparent));
-		pointer-events: none;
-	}
-
-	/* Tinkerings: the canvas fills the whole screen behind everything */
+	/* Tinkerings: the canvas fills the whole screen behind everything, a shade lighter than the
+	   page so it still reads as a canvas */
 	.canvas-page {
 		position: fixed;
 		inset: 0;
-		background: var(--desk);
+		background: var(--canvas);
 	}
 
 	/* While a project popup or chaos mode is open, the canvas comes forward so they cover the
@@ -442,7 +425,7 @@
 		z-index: 4;
 	}
 
-	/* The margin floats on the canvas, on a soft patch of the desk colour so it stays readable */
+	/* The margin floats on the canvas, on a soft patch of the canvas colour so it stays readable */
 	.canvas .side {
 		position: relative;
 		top: auto; /* no sticky offset here, or it would sit 56px lower than on the other pages */
@@ -461,7 +444,7 @@
 		position: absolute;
 		inset: -2.5rem -2rem 0 -3rem;
 		z-index: -1;
-		background: var(--desk);
+		background: var(--canvas);
 		mask-image: radial-gradient(closest-side, black 70%, transparent);
 		mask-size: 100% 100%;
 	}
@@ -483,6 +466,18 @@
 		.canvas .notes {
 			margin-top: 32px;
 		}
+	}
+
+	/* The blog's slim bar runs across the whole window under the page, like on Tinkering.
+	   The page leaves room for it, so on a short page the bar still sits at the bottom of the screen. */
+	.sheet.barred {
+		--bar-height: calc(2.65rem + 5px); /* about how tall the bar is */
+		min-height: calc(100dvh - var(--sheet-top) - var(--bar-height));
+		padding-bottom: 4rem;
+	}
+
+	.group:has(.sheet.barred) {
+		min-height: calc(100dvh - 2.65rem - 5px);
 	}
 
 	/* The slim footer, along the bottom of the canvas */
