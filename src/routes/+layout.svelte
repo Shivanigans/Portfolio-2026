@@ -37,8 +37,20 @@
 	// Tinkering is a canvas that fills the screen
 	const canvas = $derived(!page.error && page.url.pathname === '/tinkering');
 
-	// The blog has the same slim bar as Tinkering; every other page has the socials table
-	const footer = $derived(page.url.pathname.startsWith('/blog') ? 'bar' : 'table');
+	// Whether the window is phone-sized. It starts false so the server and the browser draw the
+	// same thing to begin with, and is set as soon as the page is open.
+	let phone = $state(false);
+	$effect(() => {
+		const narrow = matchMedia('(max-width: 48rem)');
+		const sync = () => (phone = narrow.matches);
+		sync();
+		narrow.addEventListener('change', sync);
+		return () => narrow.removeEventListener('change', sync);
+	});
+
+	// The blog has the same slim bar as Tinkering; every other page has the socials table.
+	// On phones every page has the table: the slim bar is too cramped to read at that width.
+	const footer = $derived(!phone && page.url.pathname.startsWith('/blog') ? 'bar' : 'table');
 
 	// The tab just clicked, so it lights up straight away while the next page loads
 	let clicked = $state('');
@@ -140,7 +152,7 @@
 			{@render children()}
 		</main>
 		<div class="canvas-footer" inert={popup.open}>
-			<SiteFooter variant="bar" />
+			<SiteFooter variant={phone ? 'table' : 'bar'} />
 		</div>
 	{:else}
 		<main class="sheet" class:barred={footer === 'bar'}>
@@ -419,8 +431,10 @@
 	/* Phones: the bar is the logo on the left and the menu button on the right. The tabs and
 	   Resume drop down under it as a list when the menu is opened. */
 	@media (max-width: 48rem) {
+		/* Two columns instead of three: the middle one was what held the tabs in the centre of
+		   the page, and with it gone the menu button sits in the right corner. */
 		.topbar {
-			flex-wrap: wrap;
+			grid-template-columns: 1fr auto;
 			gap: 0;
 			padding: 0.75rem 0.75rem 0.75rem 1rem;
 		}
@@ -437,7 +451,7 @@
 		/* The wrapper comes back here, so the tabs and Resume can hide and show together */
 		.menu {
 			display: none;
-			flex-basis: 100%;
+			grid-column: 1 / -1;
 			margin-top: 0.75rem;
 		}
 
@@ -455,6 +469,7 @@
 		.resume {
 			display: flex;
 			align-items: center;
+			justify-self: stretch; /* Resume is a row like the rest, not tucked into the corner */
 			min-height: 44px;
 			padding: 0 0.5rem;
 			border-bottom: 1px solid var(--line);
@@ -477,6 +492,7 @@
 
 		.canvas-footer {
 			position: static;
+			padding: 0 24px;
 		}
 	}
 

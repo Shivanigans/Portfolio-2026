@@ -10,6 +10,7 @@
 	import ProjectPanel from '$lib/components/ProjectPanel.svelte';
 	import { tagSlug } from '$lib/tinkerings.js';
 	import { ProjectPopup } from '$lib/projectPopup.svelte.js';
+	import ToTop from '$lib/components/ToTop.svelte';
 
 	let { data } = $props();
 
@@ -94,6 +95,8 @@
 		onclosed={projects.closed}
 	/>
 {/if}
+
+<ToTop away={!!projects.current} />
 
 <style>
 	h1 {

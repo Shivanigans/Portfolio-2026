@@ -10,6 +10,7 @@
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
 	import ProjectPanel from '$lib/components/ProjectPanel.svelte';
 	import StoryTooltip from '$lib/StoryTooltip.svelte';
+	import ToTop from '$lib/components/ToTop.svelte';
 	import { emailLink } from '$lib/links.js';
 	import { ProjectPopup } from '$lib/projectPopup.svelte.js';
 	import { reveal } from '$lib/reveal.js';
@@ -30,18 +31,7 @@
 		lastCard = `${section.slug}:${item.id}`;
 		projects.open(item);
 	}
-
-	// The back-to-top button shows once you've scrolled about 600px down
-	let scrollY = $state(0);
-	const showTop = $derived(scrollY > 600);
-
-	function toTop() {
-		const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-		window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
-	}
 </script>
-
-<svelte:window bind:scrollY />
 
 <svelte:head>
 	<title>shivanigans</title>
@@ -98,16 +88,7 @@
 	</section>
 </div>
 
-<button
-	type="button"
-	class="to-top"
-	class:shown={showTop && !projects.current}
-	onclick={toTop}
-	aria-label="Back to top"
-	tabindex={showTop ? 0 : -1}
->
-	<Arrow dir="up" />
-</button>
+<ToTop away={!!projects.current} />
 
 {#if projects.current}
 	<ProjectPanel
@@ -227,44 +208,6 @@
 		}
 	}
 
-	/* Back to top: a 48px square button in the bottom right corner, hidden near the top */
-	.to-top {
-		position: fixed;
-		right: 1.5rem;
-		bottom: 1.5rem;
-		z-index: 100;
-		display: grid;
-		place-items: center;
-		width: 48px;
-		height: 48px;
-		padding: 0;
-		border: 1px solid var(--text);
-		background: var(--bg);
-		font-size: var(--type-card);
-		color: var(--text);
-		cursor: pointer;
-		opacity: 0;
-		visibility: hidden;
-		transition:
-			opacity 0.25s ease,
-			visibility 0.25s,
-			background-color 0.15s ease;
-	}
-
-	.to-top.shown {
-		opacity: 1;
-		visibility: visible;
-	}
-
-	.to-top:hover {
-		background: var(--pink-soft);
-	}
-
-	.to-top:focus-visible {
-		outline: 2px solid var(--text);
-		outline-offset: 3px;
-	}
-
 	/* Phones: one card to a row, the full width, so a picture is big enough to see */
 	@media (max-width: 48rem) {
 		.grid {
@@ -274,17 +217,6 @@
 
 		.tldr {
 			font-size: var(--type-title);
-		}
-
-		.to-top {
-			right: 1rem;
-			bottom: 1rem;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.to-top {
-			transition: none;
 		}
 	}
 </style>
