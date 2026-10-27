@@ -18,18 +18,19 @@
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
 
 		<meta property="og:title" content="shivanigans" />
-		<meta
-			property="og:description"
-			content="Shivani's corner on the internet"
-		/>
+		<meta property="og:description" content="Shivani’s corner on the internet" />
 		<meta property="og:url" content="https://shivanigans.fyi/" />
 		<meta property="og:type" content="website" />
-		<meta property="og:image" content="https://shivanigans.fyi/og-image.png" />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
+		<!-- Drawn at twice the 1200x630 the sharing cards ask for, because WhatsApp and the rest
+		     squeeze the picture down to a thumbnail and a 1x one comes out soft. The ?v= is a
+		     cache buster: they hold on to the old picture for weeks, so bump it on every change. -->
+		<meta property="og:image" content="https://shivanigans.fyi/og-image.png?v=2" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="2400" />
+		<meta property="og:image:height" content="1260" />
 		<meta
 			property="og:image:alt"
-			content="Shivani's hand-drawn face with glasses, and the line: Shivani's corner on the internet"
+			content="Shivani's hand-drawn face with glasses on a yellow star, and the line: Shivani's corner on the internet"
 		/>
 		<meta name="twitter:card" content="summary_large_image" />
 
