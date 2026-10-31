@@ -102,6 +102,18 @@
 		onclosed();
 	}
 
+	// A demo, once it has loaded, grows its tile to the height the demo page actually needs, so
+	// the panel does all the scrolling and no demo is left with a scrollbar of its own. The demos
+	// are pages of this site, so their height can simply be read. The heights in the styles below
+	// are the starting size, and a demo shorter than that keeps it.
+	function fitDemo(e) {
+		const frame = e.currentTarget;
+		const page = frame.contentDocument;
+		const tile = frame.closest('.pic-tile');
+		if (!page || !tile) return;
+		tile.style.height = `${page.documentElement.scrollHeight}px`;
+	}
+
 	// Splits text into plain words and links, written as [words](https://...)
 	function withLinks(text) {
 		const out = [];
@@ -161,10 +173,10 @@
 				</div>
 			{:else if project.demos?.length}
 				<!-- Live demos: small web pages to point at and play with. A wide one spans both columns. -->
-				<div class="pics">
+				<div class="pics demos">
 					{#each project.demos as demo}
 						<div class="pic-tile demo" class:wide={demo.wide}>
-							<iframe src={demo.src} title={demo.title} loading="lazy"></iframe>
+							<iframe src={demo.src} title={demo.title} loading="lazy" onload={fitDemo}></iframe>
 						</div>
 					{/each}
 				</div>
@@ -421,7 +433,27 @@
 		object-fit: cover;
 	}
 
-	/* A live demo fills its tile. A wide one spans both columns and is taller, for a longer story. */
+	/* A picture on its own keeps its own shape instead. Two side by side are cropped so the pair
+	   line up, but a lone picture has nothing to line up with, and cropping it only loses work:
+	   the sticker sheet is wider than 4:3 and was losing a sticker off each end. */
+	.pics.single .pic-tile {
+		aspect-ratio: auto;
+	}
+
+	.pics.single .pic-tile :global(img),
+	.pics.single .pic-tile :global(video) {
+		height: auto;
+	}
+
+	/* An empty slot has no shape of its own, so it keeps the 4:3 box */
+	.pics.single .pic-tile :global(.placeholder) {
+		height: auto;
+		aspect-ratio: 4 / 3;
+	}
+
+	/* A live demo fills its tile. They lie one under another, each the full width of the panel:
+	   they're small pages to read and point at, not pictures to compare, so side by side only
+	   made them narrow enough to need their own scrollbars. A longer one is taller. */
 	.demo iframe {
 		display: block;
 		width: 100%;
@@ -429,9 +461,16 @@
 		border: 0;
 	}
 
-	.demo.wide {
-		grid-column: 1 / -1;
+	.pics.demos {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.pics.demos .pic-tile {
 		aspect-ratio: auto;
+		height: 20rem;
+	}
+
+	.pics.demos .demo.wide {
 		height: 33rem;
 	}
 

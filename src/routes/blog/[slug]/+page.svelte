@@ -140,6 +140,45 @@
 		line-height: 1.8;
 	}
 
+	/* An item that opens with its own bold run-in heading ("1. My website's footer", and so
+	   on) starts about two blank lines below whatever came before it, so each one reads as
+	   its own little section rather than as more of the paragraph above.
+	   The class is put on while the post is built, by src/lib/numbered-items.js. */
+	.body :global(p.item) {
+		margin-top: 3.5rem;
+	}
+
+	/* Except the first one, which already has the heading's own room above it */
+	.body :global(h2 + p.item) {
+		margin-top: 1rem;
+	}
+
+	/* Who said it, under the quote and pushed to the right. It steps out of the line above:
+	   no highlight behind it, and on its own line rather than running on from the words. */
+	.body :global(blockquote .from) {
+		display: block;
+		background: none;
+		margin-top: 0.75rem;
+		text-align: right;
+		font-style: italic;
+		font-size: var(--type-meta);
+		color: var(--muted);
+	}
+
+	/* A thin line across the reading column, for the end of a post */
+	.body :global(hr) {
+		height: 0;
+		margin: 3rem 0 1.25rem;
+		border: 0;
+		border-top: 1px solid var(--line);
+	}
+
+	/* The small print after that line */
+	.body :global(.disclosure) {
+		font-size: var(--type-meta);
+		color: var(--muted);
+	}
+
 	.body :global(code) {
 		font-size: 0.95em;
 	}

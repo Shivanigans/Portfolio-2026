@@ -2,7 +2,8 @@ import { helloNote, story } from '$lib/home.js';
 import { tagSlug, tinkerings } from '$lib/tinkerings.js';
 
 // The home page story, worked out from src/lib/home.js: each section's projects that are on
-// the site, with its stand-ins filling any gaps
+// the site, with its stand-ins filling any gaps. A section with `images` instead shows those
+// pictures as they are, so it has no project cards to work out.
 export function load() {
 	const byId = new Map(tinkerings.map((t) => [t.id, t]));
 	const onSite = (ids = []) => ids.map((id) => byId.get(id)).filter(Boolean);
@@ -12,12 +13,15 @@ export function load() {
 			note: part.note,
 			sections: part.sections
 				.map((section) => {
+					const slug = tagSlug(section.tag);
+					if (section.images) return { ...section, slug, items: [] };
+
 					const items = onSite(section.projects);
 					const gaps = section.projects.length - items.length;
 					items.push(...onSite(section.standIns).slice(0, gaps));
-					return { ...section, slug: tagSlug(section.tag), items };
+					return { ...section, slug, items };
 				})
-				.filter((section) => section.items.length)
+				.filter((section) => section.items.length || section.images?.length)
 		}))
 		.filter((part) => part.sections.length);
 

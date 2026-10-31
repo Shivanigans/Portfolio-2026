@@ -25,6 +25,8 @@
 	// How far in from the edges the cards' points can go, so no card covers an axis label
 	const INSET_X = 140;
 	const INSET_Y = 100;
+	// Room round the matrix for the axis labels, which sit out past its ends
+	const MARGIN = 120;
 	const MIN_ZOOM = 0.4;
 	const MAX_ZOOM = 1.6;
 
@@ -90,9 +92,8 @@
 		const zoom = clamp(Math.min(free.width / (WIDTH + 180), free.height / (HEIGHT + 60)) * 1.25, MIN_ZOOM, 1);
 		view = {
 			zoom,
-			// Centred, but never so far left that the "Hand-drawn" label (which sticks out about
-			// 100px past the matrix's left end) goes under the margin
-			x: Math.max(free.left + free.width / 2 - (WIDTH / 2) * zoom, free.left + 100 * zoom),
+			// Centred, but never so far left that the "Hand-drawn" label goes under the margin
+			x: Math.max(free.left + free.width / 2 - (WIDTH / 2) * zoom, free.left + MARGIN * zoom),
 			y: free.top + free.height / 2 - (HEIGHT / 2) * zoom
 		};
 	}
@@ -107,18 +108,25 @@
 	const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 
 	// Zoom by a factor, keeping the point (cx, cy) on screen where it is
-	// Never let the matrix be dragged (or scrolled) right off the screen: at least a quarter of
-	// it, or 240px, always stays in view, so the canvas can't end up empty
+	// Never let the canvas wander off the projects. The matrix, with room round it for the labels
+	// that sit out past its ends, always covers the free space, so there's nothing to be found by
+	// dragging but the work. Zooming in is what makes the matrix bigger than that space, and the
+	// extra is exactly how far it can then be moved.
 	function keep(v) {
-		const w = WIDTH * v.zoom;
-		const h = HEIGHT * v.zoom;
-		const mx = Math.min(w / 4, 240);
-		const my = Math.min(h / 4, 240);
+		const free = freeSpace();
 		return {
 			...v,
-			x: clamp(v.x, mx - w, innerWidth - mx),
-			y: clamp(v.y, my - h, innerHeight - my)
+			x: within(v.x, free.left, free.left + free.width, WIDTH, v.zoom),
+			y: within(v.y, free.top, free.top + free.height, HEIGHT, v.zoom)
 		};
+	}
+
+	// One side of that: the matrix reaches from one end of the free space to the other if it's big
+	// enough to, and if it isn't (zoomed out, or a short screen) it stays inside them instead
+	function within(pos, start, end, size, zoom) {
+		const near = start + MARGIN * zoom; // as far that way as it goes: its near edge on the start
+		const far = end - (size + MARGIN) * zoom; // and as far this way: its far edge on the end
+		return far > near ? clamp(pos, near, far) : clamp(pos, far, near);
 	}
 
 	function zoomAt(factor, cx, cy) {
@@ -278,10 +286,10 @@
 				<div class="marks" aria-hidden="true">
 					{#each items as item (item.id)}
 						{@const on = plotted?.id === item.id}
-						<span class="tick across" class:on style:left="{px(item)}px" style:top="{HEIGHT / 2}px">
+						<span class="tick across" class:on class:flip={item.y >= 50} style:left="{px(item)}px" style:top="{HEIGHT / 2}px">
 							<span class="tick-label">{howMade(item)}</span>
 						</span>
-						<span class="tick down" class:on style:left="{WIDTH / 2}px" style:top="{py(item)}px">
+						<span class="tick down" class:on class:flip={item.x >= 50} style:left="{WIDTH / 2}px" style:top="{py(item)}px">
 							<span class="tick-label">{whyMade(item)}</span>
 						</span>
 					{/each}
@@ -608,6 +616,19 @@
 		top: 50%;
 		left: calc(100% + 0.5rem);
 		transform: translateY(-50%);
+	}
+
+	/* Each label goes to the far side from its own card, which also keeps the two apart: a card
+	   below the across axis would otherwise land its words right on top of the down axis's, and a
+	   card on the right would have the down axis's words drawn across its own picture. */
+	.across.flip .tick-label {
+		top: auto;
+		bottom: calc(100% + 0.5rem);
+	}
+
+	.down.flip .tick-label {
+		left: auto;
+		right: calc(100% + 0.5rem);
 	}
 
 	/* "✥ Drag to explore", top right on a white chip */

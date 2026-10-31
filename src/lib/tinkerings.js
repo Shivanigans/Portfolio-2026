@@ -116,12 +116,12 @@ export const tinkerings = [
 		id: 'walks-from-life',
 		title: 'Walks from life',
 		tags: ['Creative coding', 'Data viz'],
-		x: 52,
-		y: 54,
+		x: 50,
+		y: 74,
 		width: 16,
-		media: '/blog/Walking_with_a_dog-front-1080.webp',
-		// Zoomed in on its card so the postcard's cream edges and caption strip don't show
-		thumbZoom: { scale: 1.24, origin: '50% 40%' },
+		// Three of the postcards laid out together, drawn at 4:3 to fit the card exactly,
+		// so it needs no thumbZoom
+		media: 'walks-from-life-thumb.jpg',
 		cover: 'walks-from-life.webp',
 		images: ['walks-from-life.webp', '/blog/Walking_with_a_dog-front-1080.webp'],
 		description:
@@ -188,7 +188,7 @@ export const tinkerings = [
 		tags: ['UI experiments', 'Illustration'],
 		note: 'Building my own tool for a motion experiment',
 		x: 25,
-		y: 14,
+		y: 12,
 		width: 16,
 		media: 'Orbit Motion Exploration.mp4',
 		thumb: '/projects/sticker-press/sticker-press.jpg', // the video's first frame, kept still
@@ -204,7 +204,7 @@ export const tinkerings = [
 		tags: ['Creative coding'],
 		note: 'Understand how drawing in p5.js works',
 		x: 14,
-		y: 57,
+		y: 52,
 		width: 16,
 		media: 'portrait-in-code.webp',
 		description: 'From my p5.js portraits project, where I draw in code. A slow project, work in progress.',
@@ -217,8 +217,8 @@ export const tinkerings = [
 		title: 'A visual dictionary for my fillers',
 		tags: ['UI experiments'],
 		note: 'Building a context layer for my own understanding with an LLM',
-		x: 80,
-		y: 74,
+		x: 86,
+		y: 64,
 		width: 16,
 		media: 'context-subtext.webp',
 		description:
@@ -318,8 +318,8 @@ export const tinkerings = [
 		note: 'A hidden punchline, one step at a time',
 		tags: ['UI experiments'],
 		// PLACEHOLDER spot on the matrix: move it by changing x and y
-		x: 78,
-		y: 33,
+		x: 80,
+		y: 32,
 		width: 16,
 		media: '/projects/tooltip-tooltip/tooltip-tooltip.webp', // the turtles demo, its stack open
 		// The three demos, live in the popup (static/projects/tooltip-tooltip/)
@@ -339,8 +339,8 @@ export const tinkerings = [
 		note: 'A screensaver with the people you miss',
 		tags: ['Creative coding', 'UI experiments'],
 		// Build for fun, leaning technical, with hand-drawn faces
-		x: 33,
-		y: 86,
+		x: 20,
+		y: 90,
 		width: 16,
 		media: '/projects/bouncy-friends/bouncy-friends.webp', // the four in a row, kept still on the card
 		cover: '/projects/bouncy-friends/bouncy-friends-4x3.mp4', // the 14s clip, in the popup
@@ -379,6 +379,22 @@ export const tinkerings = [
 		],
 		about: '', // in your own words, when you're ready
 		link: ''
+	},
+	{
+		id: 'meraki-archive',
+		title: 'Meraki archive',
+		tags: ['Product & UX', 'UI experiments'],
+		about: 'Building an archive website for a student-run magazine',
+		// Build for fun, leaning technical. Lower than the middle on purpose: Walks from life is
+		// already sitting there, and two cards in one spot cover each other up.
+		x: 78,
+		y: 96,
+		width: 16,
+		// The archive's home page, its covers in a row. The card crops it to 4:3; the popup shows
+		// it whole. To show a second picture, an edition open, put both here instead:
+		// images: ['/projects/meraki-archive/meraki-archive.jpg', '/projects/meraki-archive/meraki-archive-edition.jpg']
+		media: '/projects/meraki-archive/meraki-archive.jpg',
+		link: 'https://merakiarchive.vercel.app'
 	}
 ];
 

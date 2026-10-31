@@ -1,5 +1,6 @@
 <script>
-	// Home: the hello, then the story of your work in sections (a heading and its project cards),
+	// Home: the hello, then the story of your work in sections (a heading and either its project
+	// cards or, where a section is there for a flavour rather than a case study, a few pictures),
 	// the TL;DR line, and the way to reach you. The socials and the live status line come after,
 	// from the layout. Each part of the story opens with its own small pink line.
 	// Each piece fades and slides up as it scrolls into view (use:reveal, src/lib/reveal.js).
@@ -7,6 +8,7 @@
 	// The story's lines, headings and projects are in src/lib/home.js, the projects in
 	// src/lib/tinkerings.js, the email link in src/lib/links.js.
 	import Arrow from '$lib/components/Arrow.svelte';
+	import Media from '$lib/components/Media.svelte';
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
 	import ProjectPanel from '$lib/components/ProjectPanel.svelte';
 	import StoryTooltip from '$lib/StoryTooltip.svelte';
@@ -40,9 +42,12 @@
 <!-- While the popup is open, the page behind can't be clicked or tabbed into -->
 <div class="home" inert={!!projects.current}>
 	<section class="hello">
-		<!-- The space before the dash doesn't break, so no line starts with it -->
-		<h1>Hi, I’m Shivani&nbsp;- a designer, maker and chief LLM operator.</h1>
-		<p>I’m in the process of moving into this place. Curating it project by project and word by word.</p>
+		<!-- The space before the dash doesn’t break, so no line starts with it -->
+		<h1>hi, I’m Shivani&nbsp;— maker of visuals, teller of stories, builder of experiences</h1>
+		<p>
+			I enjoy building tools and experiences that are usable and driven by impact, and
+			sometimes purely for fun.
+		</p>
 	</section>
 
 	{#each data.parts as part}
@@ -50,21 +55,34 @@
 			{#each part.sections as section, i (section.slug)}
 				<section class="topic" aria-labelledby="topic-{section.slug}">
 					<!-- The part's own line, once, just above its first heading -->
-					{#if i === 0}<p class="story-line" use:reveal>{part.note}</p>{/if}
+					<!-- A part may have no line of its own, and then nothing goes here -->
+					{#if i === 0 && part.note}<p class="story-line" use:reveal>{part.note}</p>{/if}
 					<h2 id="topic-{section.slug}" use:reveal>{section.heading}</h2>
 
-					<ul class="grid">
-						{#each section.items as item (item.id)}
-							<li use:reveal={0.1}>
-								<ProjectCard
-									{item}
-									priority={section === data.parts[0].sections[0] && item === section.items[0]}
-									bind:el={cards[`${section.slug}:${item.id}`]}
-									onopen={(t) => openFrom(section, t)}
-								/>
-							</li>
-						{/each}
-					</ul>
+					{#if section.images}
+						<!-- Loose pictures: nothing opens when they're clicked, they're only here to
+						     give an idea of the work -->
+						<ul class="sketches">
+							{#each section.images as picture, n (n)}
+								<li use:reveal={0.1}>
+									<Media src={picture.src ?? ''} alt={picture.alt ?? ''} />
+								</li>
+							{/each}
+						</ul>
+					{:else}
+						<ul class="grid">
+							{#each section.items as item (item.id)}
+								<li use:reveal={0.1}>
+									<ProjectCard
+										{item}
+										priority={section === data.parts[0].sections[0] && item === section.items[0]}
+										bind:el={cards[`${section.slug}:${item.id}`]}
+										onopen={(t) => openFrom(section, t)}
+									/>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</section>
 			{/each}
 		</div>
@@ -150,6 +168,50 @@
 		list-style: none;
 	}
 
+	/* A flavour of the drawing: the pictures in a row, each pinned up at its own small angle
+	   so they read as sheets laid on the page rather than another row of cards */
+	.sketches {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 1.25rem;
+		margin: 0.5rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	/* They share a height and keep their own shapes, so a tall sheet and a wide one sit
+	   together without either being cropped */
+	.sketches li {
+		height: clamp(14rem, 24vw, 21rem);
+		border: 1px solid var(--line);
+		background: var(--paper);
+	}
+
+	.sketches li:nth-child(3n + 1) {
+		rotate: -1.5deg;
+	}
+
+	.sketches li:nth-child(3n + 2) {
+		rotate: 0.75deg;
+	}
+
+	.sketches li:nth-child(3n) {
+		rotate: -0.5deg;
+	}
+
+	.sketches li :global(img),
+	.sketches li :global(video) {
+		width: auto;
+		height: 100%;
+	}
+
+	/* An empty slot keeps the 4:3 box Media gives it */
+	.sketches li :global(.placeholder) {
+		width: auto;
+		height: 100%;
+	}
+
 	/* The ending: the TL;DR line at 48px, the open-to-work line, then the two buttons */
 	.closing {
 		margin-top: 7rem;
@@ -213,6 +275,12 @@
 		.grid {
 			grid-template-columns: minmax(0, 1fr);
 			gap: 2rem;
+		}
+
+		/* The pictures shrink rather than filling the width: they're a glance, not the main
+		   thing on the page */
+		.sketches li {
+			height: clamp(11rem, 38vw, 15rem);
 		}
 
 		.tldr {
