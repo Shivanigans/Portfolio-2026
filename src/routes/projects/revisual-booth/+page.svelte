@@ -12,6 +12,7 @@
 	// The sections run edge to edge of the page column: .study cancels the column's side
 	// padding with a negative margin, and each section puts its own padding back.
 	import Arrow from '$lib/components/Arrow.svelte';
+	import ToTop from '$lib/components/ToTop.svelte';
 
 	const base = '/projects/revisual-booth';
 
@@ -72,7 +73,7 @@
 </script>
 
 <svelte:head>
-	<title>Booth graphics and Merch Design · shivanigans</title>
+	<title>Merch design for Revisual Labs · shivanigans</title>
 	<meta
 		name="description"
 		content="Print, play and a little bit of data for Revisual Labs’ booth at VizChitra 2025."
@@ -88,7 +89,7 @@
 
 		<div class="hero-row">
 			<div class="hero-words">
-				<h1>Booth graphics and Merch Design</h1>
+				<h1>Merch design for Revisual Labs</h1>
 				<p class="subline">
 					Print, play and a little bit of data for Revisual Labs’ booth at VizChitra 2025
 				</p>
@@ -254,6 +255,9 @@
 		</p>
 	</section>
 </article>
+
+<!-- Back to top, on pages at least two screens long -->
+<ToTop screens={2} />
 
 <style>
 	/* ---- The page's own look, kept inside .study so nothing leaks out ---- */

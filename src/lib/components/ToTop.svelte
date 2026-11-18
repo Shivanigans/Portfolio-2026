@@ -1,12 +1,19 @@
 <script>
 	// The way back to the top of a long page: a square button in the bottom right corner that
 	// appears once you're about 600px down. `away` hides it while a popup is open.
+	// screens: only show it on a page at least this many screens tall, e.g. 2. Measured as you
+	// scroll, so pictures that load in late still count.
 	import Arrow from '$lib/components/Arrow.svelte';
 
-	let { away = false } = $props();
+	let { away = false, screens = 0 } = $props();
 
 	let scrollY = $state(0);
-	const shown = $derived(scrollY > 600 && !away);
+	let tall = $state(!screens);
+	const shown = $derived(scrollY > 600 && !away && tall);
+
+	function measure() {
+		tall = !screens || document.documentElement.scrollHeight >= screens * window.innerHeight;
+	}
 
 	function toTop() {
 		const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -14,7 +21,7 @@
 	}
 </script>
 
-<svelte:window bind:scrollY />
+<svelte:window bind:scrollY onscroll={measure} onresize={measure} />
 
 <button type="button" class="to-top" class:shown onclick={toTop} aria-label="Back to top" tabindex={shown ? 0 : -1}>
 	<Arrow dir="up" />

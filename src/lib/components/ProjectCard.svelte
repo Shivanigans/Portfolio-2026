@@ -1,7 +1,7 @@
 <script>
 	// One project card: the picture, then its name and a few words underneath.
-	// On Home it's just the picture and words. On the Projects page (boxed) it sits in a thin
-	// frame, with the title in National Park and the tags under it.
+	// On Home it's just the picture and the project's name. Boxed, it sits in a thin frame,
+	// with the title in National Park and the tags under it.
 	// The whole card is one link:
 	// - a project with a case study opens its own page, /projects/walks-from-life
 	// - a project documented on Behance opens Behance in a new tab
@@ -58,9 +58,10 @@
 			<Media src={item.thumb || item.media} alt="" calm {priority} />
 		{/if}
 	</span>
-	<!-- One line: the name in SemiBold, then | and what kind of project it is -->
+	<!-- One line: the name in SemiBold. Boxed cards add | and what kind of project it is;
+	     Home shows the name on its own. -->
 	<span class="words">
-		<span class="name"><Title text={item.title} /></span>{#if item.tags?.length}<span
+		<span class="name"><Title text={item.title} /></span>{#if boxed && item.tags?.length}<span
 				class="sep"
 				aria-hidden="true">|</span
 			><span class="type"

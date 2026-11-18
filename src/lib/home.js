@@ -50,7 +50,7 @@ export const story = [
 			{
 				tag: 'Data viz',
 				heading: 'Climate research reach an audience beyond PDFs',
-				projects: ['ceew-charts-and-viz', 'data-book-illustrations']
+				projects: ['ceew-charts-and-viz', 'ceew-data-illustrations']
 			}
 		]
 	},

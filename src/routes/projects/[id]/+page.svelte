@@ -3,6 +3,7 @@
 	// lines, then the parts (headings, text, pictures two by two), its links, and the next project.
 	// Everything here comes from the project's caseStudy in src/lib/tinkerings.js.
 	import Arrow from '$lib/components/Arrow.svelte';
+	import ToTop from '$lib/components/ToTop.svelte';
 	import Media from '$lib/components/Media.svelte';
 	import Title, { plain } from '$lib/components/Title.svelte';
 	import { behanceLink } from '$lib/links.js';
@@ -89,6 +90,9 @@
 		</a>
 	</nav>
 </article>
+
+<!-- Back to top, on pages at least two screens long -->
+<ToTop screens={2} />
 
 <style>
 	/* "← Projects": deep pink, small */

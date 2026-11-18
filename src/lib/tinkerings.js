@@ -85,26 +85,52 @@ export const tinkerings = [
 		id: 'water-portfolio-map',
 		title: 'Water portfolio map',
 		note: 'UI/UX case study',
+		description: 'Designing an interactive dashboard to map Villgro’s water programme portfolio.',
 		tags: ['Product & UX'],
 		media: '/projects/water-portfolio-map/water-portfolio-map.webp', // its Behance cover
 		behance: 'https://www.behance.net/gallery/257250019/Water-Program-Portfolio-Interactive-Dashboard'
 	},
 	{
 		id: 'ceew-charts-and-viz',
-		title: 'CEEW charts and viz',
+		title: 'CEEW charts & data viz',
 		note: 'CEEW',
+		description: 'Making charts and data visualisations for CEEW’s research.',
 		tags: ['Data viz'],
 		media: '/projects/ceew-charts-and-viz/ceew-charts-and-viz.jpg',
 		behance: 'https://www.behance.net/gallery/254613877/Data-vis-CEEW'
 	},
 	{
+		id: 'ceew-data-illustrations',
+		title: 'Data illustrations for CEEW',
+		note: 'CEEW',
+		description: 'Illustrating and visualising two chapters of CEEW’s book on India’s clean energy transition.',
+		tags: ['Data viz', 'Illustration'],
+		media: '/projects/ceew-data-illustrations/thumbnail-lgbp.png', // the 4:3 book cover
+		// Its own page, /projects/ceew-data-illustrations, built by hand like the booth page.
+		// It links to Behance from the page itself: a behance link here would make its row
+		// open Behance instead of the page.
+		caseStudy: { own: true }
+	},
+	{
+		id: 'ceew-wrapped',
+		title: 'CEEW Wrapped 2025',
+		note: 'CEEW',
+		description: 'Writing and designing CEEW’s year-end highlight reel, sent to 120k+ readers.',
+		tags: ['Illustration'],
+		media: '/projects/ceew-wrapped/thumbnail.png', // the three slides fanned out
+		// Its own page, /projects/ceew-wrapped, built by hand like the booth page.
+		// It links to Behance from the page itself: a behance link here would make its row
+		// open Behance instead of the page.
+		caseStudy: { own: true }
+	},
+	{
 		id: 'revisual-booth',
-		title: 'Booth graphics and Merch Design',
+		title: 'Merch design for Revisual Labs',
 		note: 'Revisual Labs · VizChitra 2025',
 		tags: ['Illustration'],
 		media: '/projects/revisual-booth/thumbnail-rvl.png', // the five stickers in a row
 		description:
-			'Booth graphics and merch for Revisual Labs at VizChitra 2025: a printed stand, a sheet of dataviz-pun stickers and a hand-lettered mug.',
+			'Designing the booth graphics and merch for Revisual Labs at VizChitra 2025.',
 		// Its own page, /projects/revisual-booth, built by hand from the Figma frames rather
 		// than from the shared case study template. own: true keeps it out of that template.
 		caseStudy: {
@@ -125,8 +151,7 @@ export const tinkerings = [
 		cover: 'walks-from-life.webp',
 		images: ['walks-from-life.webp', '/blog/Walking_with_a_dog-front-1080.webp'],
 		description:
-			'Walks from life was born out of noticing the shapes my walks take and how movement tells a story. The shapes are unique to each of the walks. I’ve started with data from 9 walks while looking beyond the step count.',
-	
+			'Turning my walks into drawn shapes to see how movement tells a story.',
 		about: 'Walks from life is a way to notice how movement tells a story. The shapes are unique to each of the walks. I’ve started with data from 9 walks while looking beyond a step count. The walks are from my life, and I’ve tried to capture the essence of each walk in a shape.',
 		gallery: [
 			{ src: '/blog/Walking_with_a_dog-front-1080.webp', caption: 'Walking with a dog' },
@@ -193,7 +218,7 @@ export const tinkerings = [
 		media: 'Orbit Motion Exploration.mp4',
 		thumb: '/projects/sticker-press/sticker-press.jpg', // the video's first frame, kept still
 		description:
-			'A motion experiment: playing with my existing stickers for motion work. I built a tool to process and tweak this.',
+			'Building my own tool to give my stickers a papery, die-cut feel for motion work.',
 		about:
 			'I came across [Graphical](https://www.graphicalui.com) by Josh Puckett and Adam Michela on Twitter, with an orbital UI motion, and thought I’d recreate it with existing assets I have. These are some stickers I made for my previous organisations, CEEW and Revisual Labs.\n\nFor a one-time task, we can definitely do a one-shot prompt, but making tweaks and achieving a finished look is much easier when you can adjust parameters via a tool. So I made two browser-based tools: Sticker Press, which gives the stickers a die-cut shape and papery feel and exports them as MP4 or GIF, and an orbital motion tool where I can pick and drop PNGs and export the animation as code.',
 		link: ''
@@ -207,7 +232,7 @@ export const tinkerings = [
 		y: 52,
 		width: 16,
 		media: 'portrait-in-code.webp',
-		description: 'From my p5.js portraits project, where I draw in code. A slow project, work in progress.',
+		description: 'Drawing my portrait in code to learn how p5.js works.',
 		about:
 			'I love drawing on paper, and I was introduced to drawing with code through [Schubert’s workshop at VizChitra](https://draw-with-data.netlify.app). While you can one-shot prompt most things now, it’s important for me to understand the foundations of how things are built.\n\nI started with p5.js, drawing my monogram through basic shapes. My biggest learning was understanding that this grid is not the same one introduced to us in maths class. In code, the starting point (0, 0) sits at the top-left corner, and the numbers grow as you go down, not up. This is a WIP. More on this as I continue to explore.',
 		link: ''
@@ -222,7 +247,7 @@ export const tinkerings = [
 		width: 16,
 		media: 'context-subtext.webp',
 		description:
-			'Quote cards from my chats with my LLM, with a little dictionary of the filler words I use.',
+			'Assigning memes to my filler words to make quote cards from my chats with an LLM.',
 		about:
 			'My starting point was thinking about how type can convey tone with actual voice input. Then I saw the words taking shape while I talked, and saw the pauses. The fillers are raw material of their own.',
 		story: [
@@ -275,6 +300,7 @@ export const tinkerings = [
 		id: 'shivani-is-online',
 		title: 'Footer design',
 		note: 'A live presence indicator',
+		description: 'Showing whether I’m online, and how many tabs I have open.',
 		tags: ['UI experiments'],
 		// PLACEHOLDER spot on the matrix: move it by changing x and y
 		x: 93,
@@ -316,6 +342,7 @@ export const tinkerings = [
 		// The second "tooltip" is raised small, like a tooltip on a tooltip (see Title.svelte)
 		title: 'Tooltip^tooltip^',
 		note: 'A hidden punchline, one step at a time',
+		description: 'Hiding a punchline in a tooltip that tells a story.',
 		tags: ['UI experiments'],
 		// PLACEHOLDER spot on the matrix: move it by changing x and y
 		x: 80,
@@ -336,7 +363,7 @@ export const tinkerings = [
 	{
 		id: 'miss-you-screensaver',
 		title: 'Miss you screensaver',
-		note: 'A screensaver with the people you miss',
+		description: 'Bringing back screensavers, with my friends’ faces bouncing around like the old DVD logo.',
 		tags: ['Creative coding', 'UI experiments'],
 		// Build for fun, leaning technical, with hand-drawn faces
 		x: 20,
@@ -354,6 +381,7 @@ export const tinkerings = [
 		id: 'chaos-mode',
 		title: 'Chaos mode',
 		note: 'A hypnosis easter egg',
+		description: 'Easter egg on this site.',
 		tags: ['UI experiments'],
 		// Kept off the matrix: no x and y, so it only shows on the home page
 		width: 16,
@@ -365,6 +393,7 @@ export const tinkerings = [
 		id: 'stickers-for-ceew',
 		title: 'Stickers for CEEW',
 		note: 'CEEW',
+		description: 'Illustrating a sheet of climate-pun stickers for CEEW.',
 		tags: ['Illustration'],
 		media: '/projects/stickers-for-ceew/stickers-for-ceew.webp', // the whole sheet, for the popup
 		// The stickers on its card's frame, which can be peeled off and moved (StickerSheet.svelte).
@@ -384,6 +413,7 @@ export const tinkerings = [
 		id: 'meraki-archive',
 		title: 'Meraki archive',
 		tags: ['Product & UX', 'UI experiments'],
+		description: 'Developing a microsite to archive editions of Meraki, NIFT Hyderabad’s college magazine.',
 		about: 'Building an archive website for a student-run magazine',
 		// Build for fun, leaning technical. Lower than the middle on purpose: Walks from life is
 		// already sitting there, and two cards in one spot cover each other up.

@@ -6,6 +6,9 @@ export const resumeLink = 'https://drive.google.com/file/d/1E4UBo4NH8hVvh5J31Wnv
 // Opens a new Gmail message to you
 export const emailLink = 'https://mail.google.com/mail/?view=cm&fs=1&to=singhshivani11240@gmail.com';
 
+// People credited in the case studies, linked wherever they're named
+export const poojilLink = 'https://www.linkedin.com/in/poojil-t-123931144/';
+
 // The socials at the foot of every page: the name, and a few words about what's there
 export const socials = [
 	{ label: 'Behance', href: behanceLink, about: 'more visual design work here' },

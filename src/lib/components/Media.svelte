@@ -5,27 +5,48 @@
 	// calm: for people who have asked their device for less motion, the video stays
 	// still on its first frame instead of playing
 	// priority: the picture is the first big thing on screen, so it loads straight away, first
+	// hold: for a video, how long (in milliseconds) to stay on its last frame before playing
+	// again, e.g. so a short animation can be read before it loops. 0 loops straight away.
 	import { onMount } from 'svelte';
 
-	let { src = '', alt = '', calm = false, priority = false } = $props();
+	let { src = '', alt = '', calm = false, priority = false, hold = 0 } = $props();
 
 	const url = $derived(src.startsWith('/') ? src : `/tinkerings/${encodeURIComponent(src)}`);
 	const isVideo = $derived(/\.(mp4|webm)$/i.test(src));
 
 	let video = $state();
+	let replay;
 	onMount(() => {
 		if (calm && video && matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			video.autoplay = false;
 			video.pause();
 			video.currentTime = 0;
 		}
+		return () => clearTimeout(replay);
 	});
+
+	// With a hold, the video stops on its last frame when it ends, then starts over
+	function onended() {
+		replay = setTimeout(() => {
+			video.currentTime = 0;
+			video.play();
+		}, hold);
+	}
 </script>
 
 {#if !src}
 	<div class="placeholder"><span>wow so empty</span></div>
 {:else if isVideo}
-	<video bind:this={video} src={url} autoplay muted loop playsinline aria-label={alt || undefined}></video>
+	<video
+		bind:this={video}
+		src={url}
+		autoplay
+		muted
+		loop={!hold}
+		playsinline
+		onended={hold ? onended : undefined}
+		aria-label={alt || undefined}
+	></video>
 {:else}
 	<img src={url} {alt} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />
 {/if}
