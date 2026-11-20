@@ -12,7 +12,7 @@ colors:
   sun: "#f9e278"
   brand-pink: "#e963a8"
   pink-deep: "#b8236f"
-  pink-soft: "color-mix(brand-pink 30%, paper)"
+  pink-hover: "#A8285F"
   on-pink: "#160c28"
   status-green: "#4fbe00"
   status-online-bg: "color-mix(status-green 40%, paper)"
@@ -205,15 +205,15 @@ Tinkering breaks the sheet: its canvas fills the whole screen, and the margin fl
 - **Sun** (`--sun`): the away highlight in the status line, the highlight behind blog quotes, and the logo. Never text (1.4:1); text-colour words on it reach 8.3:1.
 - **On pink** (`--on-pink`): words on brand pink (the current tab, the chosen filter), 5.4:1.
 - **Brand pink** (`--pink`): decoration only: square markers, the stars between socials, hover outlines on cards, the plotting lines on Tinkering, the dotted line under "multitudes". Never text and never behind text (3.1:1).
-- **Deep pink** (`--pink-deep`): pink that can be read, 6.0:1 on paper: the notes heading, back links, button and filter borders, footnote numbers, link hover, the story tooltip fill (white on deep pink, 6.0:1).
-- **Pink soft** (`--pink-soft`): the hover fill on buttons, filters and the panel controls.
+- **Deep pink** (`--pink-deep`): pink that can be read, 6.0:1 on paper: the notes heading, back links, button and filter borders, footnote numbers, and the story tooltip fill (white on deep pink, 6.0:1).
+- **Hover pink** (`--pink-hover`): `#A8285F`, used for interactive text on hover. Hover states do not add background fills.
 - **Status green** (`--status-green`): the status line's tally marks, grass tuft and online dot. **Status online background** (`--status-online-bg`, status green mixed 40% into paper): the rectangular highlight behind "online"; "away" uses sun with a text-colour dot.
 - **Chaos mode** and **cookie jar** colours live inside those components only.
 
 ### Named rules
 **Pink you read is deep pink.** Any pink text, or pink border round text, is `--pink-deep`. `--pink` is for marks and outlines that carry no words.
 
-**Pink marks where you are.** Brand pink fills the current tab and the chosen filter, with on-pink words on it; pink soft is the hover. Sun is only ever a background.
+**Pink marks where you are.** The current tab stays greige with deep pink text; the chosen filter stays deep pink with on-pink words. Other interactive hovers change text to `#A8285F` without adding a fill. Sun is only ever a background.
 
 ## Typography
 
@@ -234,7 +234,7 @@ Tinkering breaks the sheet: its canvas fills the whole screen, and the margin fl
 ## Components
 
 ### Tabs
-HOME, PROJECTS, TINKERINGS, BLOG, ABOUT, RESUME ↗, in National Park Medium capitals at 13px. Greige, no outline, text colour, 140px wide, tucked against the sheet. The current page slides out to 162px in brand pink, its words in on-pink (the dark aubergine, 5.4:1; the text colour would only be 3.1:1); pointing at a tab slides it out to 148px in pink soft. Resume opens the Google Drive resume in a new tab.
+HOME, PROJECTS, TINKERINGS, BLOG, ABOUT, RESUME ↗, in National Park Medium capitals at 13px. Greige, no outline, text colour, 140px wide, tucked against the sheet. The current page is greige with deep pink text. Hovering a tab changes only its text to `#A8285F`. Resume opens the Google Drive resume in a new tab.
 
 ### Notes
 "✳ notes" in National Park, deep pink, then the page's note in Paper Mono 13px. A paragraph starting with a symbol (↘, ✥) shows the symbol in deep pink. Each page sets its note in its `+page.js`; Home changes its note as the story scrolls past (fading between them). A blog post with footnotes shows "✳ footnotes" instead, numbered in deep pink.
@@ -246,7 +246,7 @@ Every page: the socials, then the live status line without a divider above it. H
 4:3 pictures with square corners, on greige until the picture loads. On Home: just the picture, "**Name** | project type" on one line at 14px, the name in Paper Mono SemiBold, the type muted. Home thumbnails are 480px wide; pointing at it draws a 2px brand pink outline round the picture. On Projects: boxed in a 1px line, the title in National Park 22px and the tags (muted, separated by middle dots) under it; the frame turns brand pink on hover. A card opens its case study, its Behance page, or the project popup.
 
 ### Buttons and filters
-Square corners, text-colour words, a 1px deep pink border, soft pink on hover. A chosen filter is brand pink with on-pink words.
+Square corners, text-colour words and a 1px deep pink border. Hovering changes only the text colour to `#A8285F`. A chosen filter stays filled deep pink with on-pink words; the filled email button keeps its contrasting text.
 
 ### Case study
 "← Projects" in deep pink, the title, one line of intro, the details (Role, Type, Data, Status) between two lines, then the parts: headings, text held to 52ch, and pictures always in pairs, side by side, never one across the full width. Links at the end, then "Next project →" over a text-colour line.

@@ -62,10 +62,6 @@
 		text-decoration: none;
 	}
 
-	.back:hover {
-		text-decoration: underline;
-	}
-
 	.back:focus-visible {
 		outline: 2px solid var(--text);
 		outline-offset: 2px;

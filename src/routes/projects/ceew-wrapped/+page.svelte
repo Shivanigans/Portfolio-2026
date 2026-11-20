@@ -160,10 +160,6 @@
 		text-decoration: none;
 	}
 
-	.back:hover {
-		text-decoration: underline;
-	}
-
 	h1 {
 		margin-bottom: 1.5rem;
 	}

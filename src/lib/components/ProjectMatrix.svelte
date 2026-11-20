@@ -667,15 +667,16 @@
 		font-size: 1.1rem;
 		color: var(--text);
 		cursor: pointer;
-		transition: background-color 0.15s ease;
+		transition: color 0.15s ease;
 	}
 
 	.zoom button + button {
 		border-top: 0;
 	}
 
-	.zoom button:hover:not(:disabled) {
-		background: var(--pink-soft);
+	.zoom button:hover:not(:disabled),
+	.zoom button:focus-visible:not(:disabled) {
+		color: var(--pink-hover);
 	}
 
 	.zoom button:disabled {

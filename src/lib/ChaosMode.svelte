@@ -801,19 +801,13 @@
 		box-shadow: 0 0 18px rgba(200, 215, 255, 0.45);
 	}
 
-	.btn-contact:hover {
-		background: transparent;
-		color: var(--white);
-	}
-
 	.btn-resume {
 		background: transparent;
 		color: var(--white);
 	}
 
 	.btn-resume:hover {
-		background: var(--white);
-		color: var(--tv-grey);
+		color: var(--pink-hover);
 	}
 
 	.close-link {

@@ -109,7 +109,7 @@
 	--status-green: #4fbe00;
 	--status-online-bg: color-mix(in srgb, var(--status-green) 25%, var(--bg));
 	--pink: #e963a8; /* decoration only: square markers, stars, hover outlines. Never text, never behind text. */
-	--pink-soft: color-mix(in srgb, var(--pink) 30%, var(--bg)); /* the hover state: tabs, filters, buttons */
+	--pink-hover: #A8285F; /* text colour for interactive hover states */
 	/* Words on the bright pink (the current tab, the chosen filter). The text colour only reaches
 	   3.1:1 on it, so these use the darker aubergine ink: 5.4:1. */
 	--on-pink: #160c28;
@@ -179,9 +179,9 @@ a {
 	transition: color 0.15s ease;
 }
 
-/* Links turn deep pink on hover, so they stay easy to read (the tabs keep their own look) */
+/* Interactive text changes colour on hover; it never adds a background fill. */
 a:hover {
-	color: var(--pink-deep);
+	color: var(--pink-hover);
 }
 
 /* Highlighted text turns deep pink, on a soft pink background */
@@ -298,18 +298,17 @@ video {
 	font-weight: 600;
 	color: var(--text);
 	text-decoration: none;
-	transition: background-color 0.15s ease;
+	transition: color 0.15s ease;
 }
 
-/* Pointing at it fills it with the soft pink. The words stay dark instead of turning pink like links do. */
-.pill-button:hover {
-	color: var(--text);
-	background: var(--pink-soft);
+/* Pointing at it changes only the text colour. */
+.pill-button:hover,
+.pill-button:focus-visible {
+	color: var(--pink-hover);
 }
 
 /* The one filled button, "Send email": deep pink with the page grey for words (5.5:1) */
-.pill-button.filled,
-.pill-button.filled:hover {
+.pill-button.filled {
 	background: var(--pink-deep);
 	color: var(--desk);
 }

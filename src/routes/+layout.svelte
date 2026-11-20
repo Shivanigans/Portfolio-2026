@@ -274,8 +274,9 @@
 		transition: color 0.15s ease;
 	}
 
-	nav a:hover {
-		color: var(--pink-deep);
+	nav a:hover,
+	nav a:focus-visible {
+		color: var(--pink-hover);
 	}
 
 	/* The current page: a raised tab. It's filled, outlined on the top and sides, and open at the
@@ -286,6 +287,10 @@
 		border-bottom: none;
 		background: var(--greige);
 		color: var(--pink-deep);
+	}
+
+	nav a.selected:hover {
+		color: var(--pink-hover);
 	}
 
 	nav a:focus-visible {

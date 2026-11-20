@@ -121,11 +121,12 @@
 		font-weight: 500;
 		color: var(--text);
 		cursor: pointer;
-		transition: background-color 0.15s ease;
+		transition: color 0.15s ease;
 	}
 
-	.filter:hover {
-		background: var(--pink-soft);
+	.filter:hover:not([aria-pressed='true']),
+	.filter:focus-visible:not([aria-pressed='true']) {
+		color: var(--pink-hover);
 	}
 
 	/* Chosen: filled deep pink, with the page grey for words (5.5:1) */

@@ -311,10 +311,6 @@
 		text-decoration: none;
 	}
 
-	.back:hover {
-		text-decoration: underline;
-	}
-
 	/* The dark half and the light half */
 	.dark {
 		position: relative;

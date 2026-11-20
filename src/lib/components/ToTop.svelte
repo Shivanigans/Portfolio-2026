@@ -49,7 +49,7 @@
 		transition:
 			opacity 0.25s ease,
 			visibility 0.25s,
-			background-color 0.15s ease;
+			color 0.15s ease;
 	}
 
 	.to-top.shown {
@@ -57,8 +57,9 @@
 		visibility: visible;
 	}
 
-	.to-top:hover {
-		background: var(--pink-soft);
+	.to-top:hover,
+	.to-top:focus-visible {
+		color: var(--pink-hover);
 	}
 
 	.to-top:focus-visible {

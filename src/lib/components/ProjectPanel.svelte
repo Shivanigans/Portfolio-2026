@@ -365,7 +365,7 @@
 		font-size: 0.95rem;
 		color: var(--text);
 		cursor: pointer;
-		transition: background-color 0.15s ease;
+		transition: color 0.15s ease;
 	}
 
 	.controls svg {
@@ -377,9 +377,10 @@
 		stroke-linecap: round;
 	}
 
-	/* Pointing at one fills it with the soft pink, so it's clear it can be pressed */
-	.controls button:hover {
-		background: var(--pink-soft);
+	/* Pointing at one changes only its text colour. */
+	.controls button:hover,
+	.controls button:focus-visible {
+		color: var(--pink-hover);
 	}
 
 	.controls button:focus-visible {
@@ -629,7 +630,7 @@
 	}
 
 	.about a:hover {
-		color: var(--pink-deep);
+		color: var(--pink-hover);
 	}
 
 	.details {
